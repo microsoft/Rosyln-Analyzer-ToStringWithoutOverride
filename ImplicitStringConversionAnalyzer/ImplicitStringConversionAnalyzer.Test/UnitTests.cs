@@ -20,53 +20,40 @@ namespace ImplicitStringConversionAnalyzer.Test
 
             VerifyCSharpDiagnostic(test);
         }
-
-        //Diagnostic and CodeFix both triggered and checked for
+        
         [TestMethod]
-        public void TestMethod2()
+        public void DisallowImplicitStringConversionForConcatenation()
         {
             var test = @"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
-    namespace ConsoleApplication1
+namespace ConsoleApplication1
+{
+    class Program
     {
-        class TypeName
-        {   
+        static void Main(string[] args)
+        {
+            string str = """" + new object();
         }
-    }";
+    }
+}";
             var expected = new DiagnosticResult
             {
                 Id = "ImplicitStringConversionAnalyzer",
-                Message = String.Format("Type name '{0}' contains lowercase letters", "TypeName"),
+                Message = String.Format("Expression '{0}' will be implicitly converted to a string", "new object()"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 11, 15)
+                            new DiagnosticResultLocation("Test0.cs", 15, 31)
                         }
             };
 
             VerifyCSharpDiagnostic(test, expected);
-
-            var fixtest = @"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
-
-    namespace ConsoleApplication1
-    {
-        class TYPENAME
-        {   
-        }
-    }";
-            VerifyCSharpFix(test, fixtest);
         }
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
