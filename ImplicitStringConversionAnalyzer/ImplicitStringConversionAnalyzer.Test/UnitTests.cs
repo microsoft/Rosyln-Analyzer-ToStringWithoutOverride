@@ -69,6 +69,61 @@ namespace ImplicitStringConversionAnalyzer.Test
             VerifyCSharpFix(test, fixtest);
         }
 
+        [TestMethod]
+        public void DisallowImplicitStringConversionForConcatenation()
+        {
+            var test = @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
+
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string str = "" + new object();
+        }
+    }
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = "ImplicitStringConversionAnalyzer",
+                Message = String.Format("Type name '{0}' contains lowercase letters", "Program"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 11, 11)
+                        }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+
+            var fixtest = @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
+
+namespace ConsoleApplication1
+{
+    class PROGRAM
+    {
+        static void Main(string[] args)
+        {
+            string str = "" + new object();
+        }
+    }
+}";
+            VerifyCSharpFix(test, fixtest);
+        }
+
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return new ImplicitStringConversionAnalyzerCodeFixProvider();
