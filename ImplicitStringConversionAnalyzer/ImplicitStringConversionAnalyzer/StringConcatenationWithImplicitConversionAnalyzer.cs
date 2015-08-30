@@ -40,11 +40,11 @@ namespace ImplicitStringConversionAnalyzer
 
                 if (IsStringType(left) && IsReferenceTypeWithoutOverridenToString(right))
                 {
-                    CreateDiagnostic(binaryAddExpression.Right, right);
+                    ReportDiagnostic(binaryAddExpression.Right, right);
                 }
                 else if (IsReferenceTypeWithoutOverridenToString(left) && IsStringType(right))
                 {
-                    CreateDiagnostic(binaryAddExpression.Left, left);
+                    ReportDiagnostic(binaryAddExpression.Left, left);
                 }
             }
         }
@@ -54,7 +54,7 @@ namespace ImplicitStringConversionAnalyzer
             return NotStringType(typeInfo) && typeInfo.Type?.IsReferenceType == true && TypeDidNotOverrideToString(typeInfo);
         }
 
-        private void CreateDiagnostic(ExpressionSyntax expression, TypeInfo typeInfo)
+        private void ReportDiagnostic(ExpressionSyntax expression, TypeInfo typeInfo)
         {
             var diagnostic = Diagnostic.Create(Rule, expression.GetLocation(), typeInfo.Type.ToDisplayString());
 
