@@ -31,7 +31,7 @@ namespace ImplicitStringConversionAnalyzer
         }
         private void Run()
         {
-            var binaryAddExpressions = context.SemanticModel.SyntaxTree.GetRoot().DescendantNodesAndSelf().OfType<BinaryExpressionSyntax>().Where(node => node.Kind() == SyntaxKind.AddExpression);
+            var binaryAddExpressions = context.SemanticModel.SyntaxTree.GetRoot().DescendantNodesAndSelf().OfType<BinaryExpressionSyntax>().Where(IsAddExpression);
 
             foreach (var binaryAddExpression in binaryAddExpressions)
             {
@@ -47,6 +47,11 @@ namespace ImplicitStringConversionAnalyzer
                     ReportDiagnostic(binaryAddExpression.Left, left);
                 }
             }
+        }
+
+        private static bool IsAddExpression(BinaryExpressionSyntax node)
+        {
+            return node.Kind() == SyntaxKind.AddExpression;
         }
 
         private bool IsReferenceTypeWithoutOverridenToString(TypeInfo typeInfo)
