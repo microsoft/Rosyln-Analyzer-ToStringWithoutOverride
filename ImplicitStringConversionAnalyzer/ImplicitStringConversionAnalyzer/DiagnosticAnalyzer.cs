@@ -32,28 +32,35 @@ namespace ImplicitStringConversionAnalyzer
 
         private void AnalyzeSemanticModel(SemanticModelAnalysisContext context)
         {
+            var objectType = context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_Object);
             var stringType = context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_String);
+            var objectToStringMembers = objectType.GetMembers("ToString");
             var binaryAddExpressions = context.SemanticModel.SyntaxTree.GetRoot().DescendantNodesAndSelf().OfType<BinaryExpressionSyntax>().Where(node => node.Kind() == SyntaxKind.AddExpression);
 
             foreach (var binaryAddExpression in binaryAddExpressions)
             {
                 var left = context.SemanticModel.GetTypeInfo(binaryAddExpression.Left);
                 var right = context.SemanticModel.GetTypeInfo(binaryAddExpression.Right);
-
-                if (Equals(left.Type, stringType) && !Equals(right.Type, stringType) && right.Type.IsReferenceType)
+                
+                if (Equals(left.Type, stringType) && !Equals(right.Type, stringType) && right.Type.IsReferenceType && TypeHasOverridenToString(right, objectToStringMembers))
                 {
                     var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Right.GetLocation(), binaryAddExpression.Right.ToString());
 
                     context.ReportDiagnostic(diagnostic);
                 }
 
-                if (!Equals(left.Type, stringType) && Equals(right.Type, stringType) && left.Type.IsReferenceType)
+                if (!Equals(left.Type, stringType) && Equals(right.Type, stringType) && left.Type.IsReferenceType && TypeHasOverridenToString(left, objectToStringMembers))
                 {
                     var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Left.GetLocation(), binaryAddExpression.Left.ToString());
 
                     context.ReportDiagnostic(diagnostic);
                 }
             }
+        }
+
+        private static bool TypeHasOverridenToString(TypeInfo right, ImmutableArray<ISymbol> objectToStringMembers)
+        {
+            return !right.Type.GetMembers("ToString").Except(objectToStringMembers).Any();
         }
     }
 }

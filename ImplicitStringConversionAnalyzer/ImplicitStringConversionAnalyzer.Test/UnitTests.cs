@@ -95,6 +95,64 @@ namespace ConsoleApplication1
             VerifyCSharpDiagnostic(test);
         }
 
+        [TestMethod]
+        public void DisallowImplicitCustomObjectToStringConversionForConcatenation()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string str = """" + new ConvertableToString();
+        }
+
+        class ConvertableToString
+        {
+        }
+    }
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = "ImplicitStringConversionAnalyzer",
+                Message = String.Format("Expression '{0}' will be implicitly converted to a string", "new ConvertableToString()"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 8, 31)
+                        }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void AllowImplicitCustomObjectWithOverridenToStringToStringConversionForConcatenation()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string str = """" + new ConvertableToString();
+        }
+
+        class ConvertableToString
+        {
+            public override string ToString()
+            {
+                return ""value"";
+            }
+        }
+    }
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
             return new ImplicitStringConversionAnalyzerCodeFixProvider();
