@@ -41,15 +41,17 @@ namespace ImplicitStringConversionAnalyzer
             {
                 var left = context.SemanticModel.GetTypeInfo(binaryAddExpression.Left);
                 var right = context.SemanticModel.GetTypeInfo(binaryAddExpression.Right);
-                
-                if (Equals(left.Type, stringType) && !Equals(right.Type, stringType) && right.Type.IsReferenceType && TypeHasOverridenToString(right, objectToStringMembers))
+
+                if (left.Type == null || right.Type == null)
+                {
+                }
+                else if (Equals(left.Type, stringType) && !Equals(right.Type, stringType) && right.Type.IsReferenceType && TypeHasOverridenToString(right, objectToStringMembers))
                 {
                     var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Right.GetLocation(), binaryAddExpression.Right.ToString());
 
                     context.ReportDiagnostic(diagnostic);
                 }
-
-                if (!Equals(left.Type, stringType) && Equals(right.Type, stringType) && left.Type.IsReferenceType && TypeHasOverridenToString(left, objectToStringMembers))
+                else if (!Equals(left.Type, stringType) && Equals(right.Type, stringType) && left.Type.IsReferenceType && TypeHasOverridenToString(left, objectToStringMembers))
                 {
                     var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Left.GetLocation(), binaryAddExpression.Left.ToString());
 
