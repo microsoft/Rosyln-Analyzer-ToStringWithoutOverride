@@ -42,20 +42,25 @@ namespace ImplicitStringConversionAnalyzer
                 var left = context.SemanticModel.GetTypeInfo(binaryAddExpression.Left);
                 var right = context.SemanticModel.GetTypeInfo(binaryAddExpression.Right);
                 
-                if (Equals(left.Type, stringType) && !Equals(right.Type, stringType) && right.Type.IsReferenceType && !right.Type.GetMembers("ToString").Except(objectToStringMembers).Any())
+                if (Equals(left.Type, stringType) && !Equals(right.Type, stringType) && right.Type.IsReferenceType && TypeHasOverridenToString(right, objectToStringMembers))
                 {
                     var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Right.GetLocation(), binaryAddExpression.Right.ToString());
 
                     context.ReportDiagnostic(diagnostic);
                 }
 
-                if (!Equals(left.Type, stringType) && Equals(right.Type, stringType) && left.Type.IsReferenceType && !left.Type.GetMembers("ToString").Except(objectToStringMembers).Any())
+                if (!Equals(left.Type, stringType) && Equals(right.Type, stringType) && left.Type.IsReferenceType && TypeHasOverridenToString(left, objectToStringMembers))
                 {
                     var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Left.GetLocation(), binaryAddExpression.Left.ToString());
 
                     context.ReportDiagnostic(diagnostic);
                 }
             }
+        }
+
+        private static bool TypeHasOverridenToString(TypeInfo right, ImmutableArray<ISymbol> objectToStringMembers)
+        {
+            return !right.Type.GetMembers("ToString").Except(objectToStringMembers).Any();
         }
     }
 }
