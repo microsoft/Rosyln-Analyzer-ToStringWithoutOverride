@@ -27,22 +27,32 @@ namespace ImplicitStringConversionAnalyzer
 
         public override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, SyntaxKind.AddExpression);
+            context.RegisterSemanticModelAction(AnalyzeSemanticModel);
         }
 
-        private void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
+        private void AnalyzeSemanticModel(SemanticModelAnalysisContext context)
         {
-            if (context.Node is BinaryExpressionSyntax && context.Node.Kind() == SyntaxKind.AddExpression)
-            {
-                var node = (BinaryExpressionSyntax)context.Node;
+            var stringType = context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_String);
+            var binaryAddExpressions = context.SemanticModel.SyntaxTree.GetRoot().DescendantNodesAndSelf().OfType<BinaryExpressionSyntax>().Where(node => node.Kind() == SyntaxKind.AddExpression);
 
-                if (node.Left.Kind() == SyntaxKind.StringLiteralExpression &&
-                    node.Right.Kind() == SyntaxKind.ObjectCreationExpression)
+            foreach (var binaryAddExpression in binaryAddExpressions)
+            {
+                var left = context.SemanticModel.GetTypeInfo(binaryAddExpression.Left);
+                var right = context.SemanticModel.GetTypeInfo(binaryAddExpression.Right);
+
+                if (Equals(left.Type, stringType) && !Equals(right.Type, stringType) && right.Type.IsReferenceType)
                 {
-                    var diagnostic = Diagnostic.Create(Rule, node.Right.GetLocation(), node.Right.ToString());
+                    var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Right.GetLocation(), binaryAddExpression.Right.ToString());
 
                     context.ReportDiagnostic(diagnostic);
-                } 
+                }
+
+                if (!Equals(left.Type, stringType) && Equals(right.Type, stringType) && left.Type.IsReferenceType)
+                {
+                    var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Left.GetLocation(), binaryAddExpression.Left.ToString());
+
+                    context.ReportDiagnostic(diagnostic);
+                }
             }
         }
     }
