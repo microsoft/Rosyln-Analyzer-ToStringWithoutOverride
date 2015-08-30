@@ -22,7 +22,7 @@ namespace ImplicitStringConversionAnalyzer
 
         public sealed override ImmutableArray<string> FixableDiagnosticIds
         {
-            get { return ImmutableArray.Create(ImplicitStringConversionAnalyzerAnalyzer.DiagnosticId); }
+            get { return ImmutableArray.Create(StringConcatenationWithImplicitConversionAnalyzer.DiagnosticId); }
         }
 
         public sealed override FixAllProvider GetFixAllProvider()
