@@ -39,14 +39,14 @@ namespace ImplicitStringConversionAnalyzer
                 var left = context.SemanticModel.GetTypeInfo(node.Left);
                 var right = context.SemanticModel.GetTypeInfo(node.Right);
 
-                if (left.Type.Name == "String" && right.Type.Name != "String")
+                if (left.Type.Name == "String" && right.Type.Name != "String" && right.Type.IsReferenceType)
                 {
                     var diagnostic = Diagnostic.Create(Rule, node.Right.GetLocation(), node.Right.ToString());
 
                     context.ReportDiagnostic(diagnostic);
                 }
 
-                if (left.Type.Name != "String" && right.Type.Name == "String")
+                if (left.Type.Name != "String" && right.Type.Name == "String" && left.Type.IsReferenceType)
                 {
                     var diagnostic = Diagnostic.Create(Rule, node.Left.GetLocation(), node.Left.ToString());
 

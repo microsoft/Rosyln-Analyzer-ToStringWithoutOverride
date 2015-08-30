@@ -92,7 +92,7 @@ namespace ConsoleApplication1
         }
 
         [TestMethod]
-        public void DisallowImplicitIntegerToStringConversionForConcatenation()
+        public void AllowImplicitIntegerToStringConversionForConcatenation()
         {
             var test = @"
 using System;
@@ -112,18 +112,8 @@ namespace ConsoleApplication1
         }
     }
 }";
-            var expected = new DiagnosticResult
-            {
-                Id = "ImplicitStringConversionAnalyzer",
-                Message = String.Format("Expression '{0}' will be implicitly converted to a string", "0"),
-                Severity = DiagnosticSeverity.Warning,
-                Locations =
-                    new[] {
-                            new DiagnosticResultLocation("Test0.cs", 15, 31)
-                        }
-            };
 
-            VerifyCSharpDiagnostic(test, expected);
+            VerifyCSharpDiagnostic(test);
         }
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
