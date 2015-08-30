@@ -22,7 +22,7 @@ namespace ImplicitStringConversionAnalyzer.Test
         }
         
         [TestMethod]
-        public void DisallowImplicitStringConversionForConcatenation()
+        public void DisallowImplicitObjectToStringConversionForConcatenation()
         {
             var test = @"
 using System;
@@ -46,6 +46,41 @@ namespace ConsoleApplication1
             {
                 Id = "ImplicitStringConversionAnalyzer",
                 Message = String.Format("Expression '{0}' will be implicitly converted to a string", "new object()"),
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 15, 31)
+                        }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void DisallowImplicitIntegerToStringConversionForConcatenation()
+        {
+            var test = @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
+
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string str = """" + 0;
+        }
+    }
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = "ImplicitStringConversionAnalyzer",
+                Message = String.Format("Expression '{0}' will be implicitly converted to a string", "0"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {

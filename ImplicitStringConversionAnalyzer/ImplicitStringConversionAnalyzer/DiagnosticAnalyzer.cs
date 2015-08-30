@@ -27,22 +27,22 @@ namespace ImplicitStringConversionAnalyzer
 
         public override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, SyntaxKind.AddExpression);
+            context.RegisterSemanticModelAction(AnalyzeSemanticModel);
         }
 
-        private void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
+        private void AnalyzeSemanticModel(SemanticModelAnalysisContext context)
         {
-            if (context.Node is BinaryExpressionSyntax && context.Node.Kind() == SyntaxKind.AddExpression)
-            {
-                var node = (BinaryExpressionSyntax)context.Node;
+            var adds = context.SemanticModel.SyntaxTree.GetRoot().DescendantNodesAndSelf().OfType<BinaryExpressionSyntax>().Where(node => node.Kind() == SyntaxKind.AddExpression);
 
-                if (node.Left.Kind() == SyntaxKind.StringLiteralExpression &&
-                    node.Right.Kind() == SyntaxKind.ObjectCreationExpression)
+            foreach (var node in adds)
+            {
+                if (context.SemanticModel.GetTypeInfo(node.Left).Type.Name == "String"
+                    && context.SemanticModel.GetTypeInfo(node.Right).Type.Name != "String")
                 {
                     var diagnostic = Diagnostic.Create(Rule, node.Right.GetLocation(), node.Right.ToString());
 
                     context.ReportDiagnostic(diagnostic);
-                } 
+                }
             }
         }
     }
