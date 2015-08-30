@@ -43,19 +43,24 @@ namespace ImplicitStringConversionAnalyzer
                 if (left.Type == null || right.Type == null)
                 {
                 }
-                else if (IsStringType(left, stringType) && !IsStringType(right, stringType) && right.Type.IsReferenceType && TypeDidNotOverrideToString(right))
+                else if (IsStringType(left, stringType) && NotStringType(right, stringType) && right.Type.IsReferenceType && TypeDidNotOverrideToString(right))
                 {
                     var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Right.GetLocation(), binaryAddExpression.Right.ToString());
 
                     context.ReportDiagnostic(diagnostic);
                 }
-                else if (!IsStringType(left, stringType) && IsStringType(right, stringType) && left.Type.IsReferenceType && TypeDidNotOverrideToString(left))
+                else if (NotStringType(left, stringType) && IsStringType(right, stringType) && left.Type.IsReferenceType && TypeDidNotOverrideToString(left))
                 {
                     var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Left.GetLocation(), binaryAddExpression.Left.ToString());
 
                     context.ReportDiagnostic(diagnostic);
                 }
             }
+        }
+
+        private static bool NotStringType(TypeInfo right, INamedTypeSymbol stringType)
+        {
+            return !IsStringType(right, stringType);
         }
 
         private static bool IsStringType(TypeInfo left, INamedTypeSymbol stringType)
