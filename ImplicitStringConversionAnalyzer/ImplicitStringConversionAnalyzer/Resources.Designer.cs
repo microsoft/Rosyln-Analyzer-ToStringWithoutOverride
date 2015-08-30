@@ -71,7 +71,7 @@ namespace ImplicitStringConversionAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expression &apos;{0}&apos; will be implicitly converted to a string.
+        ///   Looks up a localized string similar to Expression of type &apos;{0}&apos; will be implicitly converted to a string, but does not override ToString().
         /// </summary>
         internal static string AnalyzerMessageFormat {
             get {

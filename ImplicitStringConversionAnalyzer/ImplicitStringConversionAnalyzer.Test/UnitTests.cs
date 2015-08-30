@@ -38,7 +38,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ImplicitStringConversionAnalyzer",
-                Message = String.Format("Expression '{0}' will be implicitly converted to a string", "new object()"),
+                Message = "Expression of type 'object' will be implicitly converted to a string, but does not override ToString()",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -66,7 +66,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ImplicitStringConversionAnalyzer",
-                Message = String.Format("Expression '{0}' will be implicitly converted to a string", "new object()"),
+                Message = "Expression of type 'object' will be implicitly converted to a string, but does not override ToString()",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -116,7 +116,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ImplicitStringConversionAnalyzer",
-                Message = String.Format("Expression '{0}' will be implicitly converted to a string", "new NotConvertableToString()"),
+                Message = "Expression of type 'ConsoleApplication1.Program.NotConvertableToString' will be implicitly converted to a string, but does not override ToString()",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -190,7 +190,7 @@ namespace ConsoleApplication1
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new ImplicitStringConversionAnalyzerAnalyzer();
+            return new ImplicitStringConversionAnalyzer();
         }
     }
 }
