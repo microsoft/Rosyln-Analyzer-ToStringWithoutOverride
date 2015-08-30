@@ -36,16 +36,17 @@ namespace ImplicitStringConversionAnalyzer
 
             foreach (var node in adds)
             {
-                if (context.SemanticModel.GetTypeInfo(node.Left).Type.Name == "String"
-                    && context.SemanticModel.GetTypeInfo(node.Right).Type.Name != "String")
+                var left = context.SemanticModel.GetTypeInfo(node.Left);
+                var right = context.SemanticModel.GetTypeInfo(node.Right);
+
+                if (left.Type.Name == "String" && right.Type.Name != "String")
                 {
                     var diagnostic = Diagnostic.Create(Rule, node.Right.GetLocation(), node.Right.ToString());
 
                     context.ReportDiagnostic(diagnostic);
                 }
 
-                if (context.SemanticModel.GetTypeInfo(node.Left).Type.Name != "String"
-                    && context.SemanticModel.GetTypeInfo(node.Right).Type.Name == "String")
+                if (left.Type.Name != "String" && right.Type.Name == "String")
                 {
                     var diagnostic = Diagnostic.Create(Rule, node.Left.GetLocation(), node.Left.ToString());
 
