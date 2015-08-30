@@ -38,10 +38,7 @@ namespace ImplicitStringConversionAnalyzer
                 var left = context.SemanticModel.GetTypeInfo(binaryAddExpression.Left);
                 var right = context.SemanticModel.GetTypeInfo(binaryAddExpression.Right);
 
-                if (left.Type == null || right.Type == null)
-                {
-                }
-                else if (IsStringType(left) && IsReferenceTypeWithoutOverridenToString(right))
+                if (IsStringType(left) && IsReferenceTypeWithoutOverridenToString(right))
                 {
                     CreateDiagnostic(binaryAddExpression.Right, right);
                 }
@@ -54,7 +51,7 @@ namespace ImplicitStringConversionAnalyzer
 
         private bool IsReferenceTypeWithoutOverridenToString(TypeInfo typeInfo)
         {
-            return NotStringType(typeInfo) && typeInfo.Type.IsReferenceType && TypeDidNotOverrideToString(typeInfo);
+            return NotStringType(typeInfo) && typeInfo.Type?.IsReferenceType == true && TypeDidNotOverrideToString(typeInfo);
         }
 
         private void CreateDiagnostic(ExpressionSyntax expression, TypeInfo typeInfo)
