@@ -32,9 +32,7 @@ namespace ImplicitStringConversionAnalyzer
 
         private void AnalyzeSemanticModel(SemanticModelAnalysisContext context)
         {
-            var objectType = context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_Object);
             var stringType = context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_String);
-            var objectToStringMembers = objectType.GetMembers("ToString");
             var binaryAddExpressions = context.SemanticModel.SyntaxTree.GetRoot().DescendantNodesAndSelf().OfType<BinaryExpressionSyntax>().Where(node => node.Kind() == SyntaxKind.AddExpression);
 
             foreach (var binaryAddExpression in binaryAddExpressions)
@@ -45,13 +43,13 @@ namespace ImplicitStringConversionAnalyzer
                 if (left.Type == null || right.Type == null)
                 {
                 }
-                else if (Equals(left.Type, stringType) && !Equals(right.Type, stringType) && right.Type.IsReferenceType && TypeHasOverridenToString(right, objectToStringMembers))
+                else if (Equals(left.Type, stringType) && !Equals(right.Type, stringType) && right.Type.IsReferenceType && TypeDidNotOverrideToString(right))
                 {
                     var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Right.GetLocation(), binaryAddExpression.Right.ToString());
 
                     context.ReportDiagnostic(diagnostic);
                 }
-                else if (!Equals(left.Type, stringType) && Equals(right.Type, stringType) && left.Type.IsReferenceType && TypeHasOverridenToString(left, objectToStringMembers))
+                else if (!Equals(left.Type, stringType) && Equals(right.Type, stringType) && left.Type.IsReferenceType && TypeDidNotOverrideToString(left))
                 {
                     var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Left.GetLocation(), binaryAddExpression.Left.ToString());
 
@@ -60,9 +58,22 @@ namespace ImplicitStringConversionAnalyzer
             }
         }
 
-        private static bool TypeHasOverridenToString(TypeInfo right, ImmutableArray<ISymbol> objectToStringMembers)
+        private static bool TypeDidNotOverrideToString(TypeInfo type)
         {
-            return !right.Type.GetMembers("ToString").Except(objectToStringMembers).Any();
+            return !TypeHasOverridenToString(type);
+        }
+
+        private static bool TypeHasOverridenToString(TypeInfo right)
+        {
+            for (ITypeSymbol type = right.Type; type?.BaseType != null; type = type.BaseType)
+            {
+                if (type.GetMembers("ToString").Any())
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

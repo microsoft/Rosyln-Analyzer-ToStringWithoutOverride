@@ -105,10 +105,10 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            string str = """" + new ConvertableToString();
+            string str = """" + new NotConvertableToString();
         }
 
-        class ConvertableToString
+        class NotConvertableToString
         {
         }
     }
@@ -116,7 +116,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ImplicitStringConversionAnalyzer",
-                Message = String.Format("Expression '{0}' will be implicitly converted to a string", "new ConvertableToString()"),
+                Message = String.Format("Expression '{0}' will be implicitly converted to a string", "new NotConvertableToString()"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
@@ -146,6 +146,36 @@ namespace ConsoleApplication1
             {
                 return ""value"";
             }
+        }
+    }
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void AllowImplicitCustomObjectWithOverridenToStringOnBaseToStringConversionForConcatenation()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string str = """" + new ConvertableToStringSubclass();
+        }
+
+        class ConvertableToString
+        {
+            public override string ToString()
+            {
+                return ""value"";
+            }
+        }
+
+        class ConvertableToStringSubclass : ConvertableToString
+        {
         }
     }
 }";
