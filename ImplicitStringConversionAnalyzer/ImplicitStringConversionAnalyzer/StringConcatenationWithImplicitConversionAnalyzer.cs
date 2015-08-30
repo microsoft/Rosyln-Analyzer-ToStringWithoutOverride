@@ -43,17 +43,20 @@ namespace ImplicitStringConversionAnalyzer
                 }
                 else if (IsStringType(left) && NotStringType(right) && right.Type.IsReferenceType && TypeDidNotOverrideToString(right))
                 {
-                    var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Right.GetLocation(), right.Type.ToDisplayString());
-
-                    context.ReportDiagnostic(diagnostic);
+                    CreateDiagnostic(binaryAddExpression.Right, right);
                 }
                 else if (NotStringType(left) && IsStringType(right) && left.Type.IsReferenceType && TypeDidNotOverrideToString(left))
                 {
-                    var diagnostic = Diagnostic.Create(Rule, binaryAddExpression.Left.GetLocation(), left.Type.ToDisplayString());
-
-                    context.ReportDiagnostic(diagnostic);
+                    CreateDiagnostic(binaryAddExpression.Left, left);
                 }
             }
+        }
+
+        private void CreateDiagnostic(ExpressionSyntax expression, TypeInfo typeInfo)
+        {
+            var diagnostic = Diagnostic.Create(Rule, expression.GetLocation(), typeInfo.Type.ToDisplayString());
+
+            context.ReportDiagnostic(diagnostic);
         }
 
         private bool NotStringType(TypeInfo typeInfo)
