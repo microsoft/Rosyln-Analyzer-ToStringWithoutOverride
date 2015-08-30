@@ -43,6 +43,14 @@ namespace ImplicitStringConversionAnalyzer
 
                     context.ReportDiagnostic(diagnostic);
                 }
+
+                if (context.SemanticModel.GetTypeInfo(node.Left).Type.Name != "String"
+                    && context.SemanticModel.GetTypeInfo(node.Right).Type.Name == "String")
+                {
+                    var diagnostic = Diagnostic.Create(Rule, node.Left.GetLocation(), node.Left.ToString());
+
+                    context.ReportDiagnostic(diagnostic);
+                }
             }
         }
     }
