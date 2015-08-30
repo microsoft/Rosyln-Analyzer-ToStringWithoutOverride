@@ -25,13 +25,6 @@ namespace ImplicitStringConversionAnalyzer.Test
         public void DisallowImplicitRightHandObjectToStringConversionForConcatenation()
         {
             var test = @"
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-
 namespace ConsoleApplication1
 {
     class Program
@@ -49,7 +42,7 @@ namespace ConsoleApplication1
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 15, 31)
+                            new DiagnosticResultLocation("Test0.cs", 8, 31)
                         }
             };
 
@@ -60,13 +53,6 @@ namespace ConsoleApplication1
         public void DisallowImplicitLeftHandObjectToStringConversionForConcatenation()
         {
             var test = @"
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-
 namespace ConsoleApplication1
 {
     class Program
@@ -84,7 +70,7 @@ namespace ConsoleApplication1
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 15, 26)
+                            new DiagnosticResultLocation("Test0.cs", 8, 26)
                         }
             };
 
@@ -95,13 +81,6 @@ namespace ConsoleApplication1
         public void AllowImplicitIntegerToStringConversionForConcatenation()
         {
             var test = @"
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-
 namespace ConsoleApplication1
 {
     class Program
