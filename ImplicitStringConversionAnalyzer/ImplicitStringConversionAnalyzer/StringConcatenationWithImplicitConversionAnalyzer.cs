@@ -41,15 +41,20 @@ namespace ImplicitStringConversionAnalyzer
                 if (left.Type == null || right.Type == null)
                 {
                 }
-                else if (IsStringType(left) && NotStringType(right) && right.Type.IsReferenceType && TypeDidNotOverrideToString(right))
+                else if (IsStringType(left) && IsReferenceTypeWithoutOverridenToString(right))
                 {
                     CreateDiagnostic(binaryAddExpression.Right, right);
                 }
-                else if (NotStringType(left) && IsStringType(right) && left.Type.IsReferenceType && TypeDidNotOverrideToString(left))
+                else if (IsReferenceTypeWithoutOverridenToString(left) && IsStringType(right))
                 {
                     CreateDiagnostic(binaryAddExpression.Left, left);
                 }
             }
+        }
+
+        private bool IsReferenceTypeWithoutOverridenToString(TypeInfo typeInfo)
+        {
+            return NotStringType(typeInfo) && typeInfo.Type.IsReferenceType && TypeDidNotOverrideToString(typeInfo);
         }
 
         private void CreateDiagnostic(ExpressionSyntax expression, TypeInfo typeInfo)
