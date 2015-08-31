@@ -7,6 +7,9 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace ImplicitStringConversionAnalyzer
 {
+    /// <summary>
+    /// Warns about objects being used in <a href="https://msdn.microsoft.com/en-us/library/aa691375(v=vs.71).aspx">string concatenation</a> that do not have an overriden ToString() method
+    /// </summary>
     public class StringConcatenationWithImplicitConversionAnalyzer
     {
         private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, typeof(Resources));
