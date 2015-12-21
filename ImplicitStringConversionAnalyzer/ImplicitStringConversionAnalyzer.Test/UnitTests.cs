@@ -2,16 +2,13 @@
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using TestHelper;
-using ImplicitStringConversionAnalyzer;
 
 namespace ImplicitStringConversionAnalyzer.Test
 {
     [TestClass]
     public class UnitTest : CodeFixVerifier
     {
-
         //No diagnostics expected to show up
         [TestMethod]
         public void TestMethod1()
@@ -20,7 +17,7 @@ namespace ImplicitStringConversionAnalyzer.Test
 
             VerifyCSharpDiagnostic(test);
         }
-        
+
         [TestMethod]
         public void DisallowImplicitRightHandObjectToStringConversionForConcatenation()
         {
@@ -38,12 +35,14 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ImplicitStringConversionAnalyzer",
-                Message = "Expression of type 'object' will be implicitly converted to a string, but does not override ToString()",
+                Message =
+                    "Expression of type 'object' will be implicitly converted to a string, but does not override ToString()",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
-                    new[] {
-                            new DiagnosticResultLocation("Test0.cs", 8, 31)
-                        }
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 8, 31)
+                    }
             };
 
             VerifyCSharpDiagnostic(test, expected);
@@ -66,12 +65,14 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ImplicitStringConversionAnalyzer",
-                Message = "Expression of type 'object' will be implicitly converted to a string, but does not override ToString()",
+                Message =
+                    "Expression of type 'object' will be implicitly converted to a string, but does not override ToString()",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
-                    new[] {
-                            new DiagnosticResultLocation("Test0.cs", 8, 26)
-                        }
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 8, 26)
+                    }
             };
 
             VerifyCSharpDiagnostic(test, expected);
@@ -116,12 +117,14 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ImplicitStringConversionAnalyzer",
-                Message = "Expression of type 'ConsoleApplication1.Program.NotConvertableToString' will be implicitly converted to a string, but does not override ToString()",
+                Message =
+                    "Expression of type 'ConsoleApplication1.Program.NotConvertableToString' will be implicitly converted to a string, but does not override ToString()",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
-                    new[] {
-                            new DiagnosticResultLocation("Test0.cs", 8, 31)
-                        }
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 8, 31)
+                    }
             };
 
             VerifyCSharpDiagnostic(test, expected);
