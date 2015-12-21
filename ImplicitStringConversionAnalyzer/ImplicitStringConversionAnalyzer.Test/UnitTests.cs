@@ -185,12 +185,7 @@ namespace ConsoleApplication1
 
             VerifyCSharpDiagnostic(test);
         }
-
-        protected override CodeFixProvider GetCSharpCodeFixProvider()
-        {
-            return new ImplicitStringConversionAnalyzerCodeFixProvider();
-        }
-
+        
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new ImplicitStringConversionAnalyzer();
