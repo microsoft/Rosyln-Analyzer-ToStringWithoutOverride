@@ -10,7 +10,7 @@ namespace ImplicitStringConversionAnalyzer.Test
     {
         //No diagnostics expected to show up
         [TestMethod]
-        public void TestMethod1()
+        public void Verify_No_Code_Shows_No_Diagnostics()
         {
             var test = @"";
 
