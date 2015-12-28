@@ -26,11 +26,13 @@ namespace ImplicitStringConversionAnalyzer
 
         private readonly SemanticModelAnalysisContext context;
         private readonly INamedTypeSymbol stringType;
+        private readonly INamedTypeSymbol objectType;
 
         public ExplicitToStringWithoutOverrideAnalyzer(SemanticModelAnalysisContext context)
         {
             this.context = context;
             stringType = context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_String);
+            objectType = context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_Object);
         }
 
         internal static void Run(SemanticModelAnalysisContext context)
@@ -101,14 +103,14 @@ namespace ImplicitStringConversionAnalyzer
             return Equals(typeInfo.Type, stringType);
         }
 
-        private static bool TypeDidNotOverrideToString(TypeInfo typeInfo)
+        private bool TypeDidNotOverrideToString(TypeInfo typeInfo)
         {
             return !TypeHasOverridenToString(typeInfo);
         }
 
-        private static bool TypeHasOverridenToString(TypeInfo typeInfo)
+        private bool TypeHasOverridenToString(TypeInfo typeInfo)
         {
-            for (var type = typeInfo.Type; type?.BaseType != null; type = type.BaseType)
+            for (var type = typeInfo.Type; type != null && !Equals(type, objectType); type = type.BaseType)
             {
                 if (type.GetMembers("ToString").Any())
                 {

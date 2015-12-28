@@ -246,6 +246,38 @@ namespace ConsoleApplication1
         }
 
         [TestMethod]
+        public void AllowExplicitToString_For_Interface_With_ToString()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IConvertableToString obj = new ConvertableToString();
+            string str = obj.ToString();
+        }
+
+        interface IConvertableToString
+        {
+            public string ToString();
+        }
+
+        class ConvertableToString
+        {
+            public override string ToString()
+            {
+                return ""value"";
+            }
+        }
+    }
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
         public void DisallowStringFormatArgument_For_CustomObjectWithoutOverridenToString()
         {
             var test = @"
