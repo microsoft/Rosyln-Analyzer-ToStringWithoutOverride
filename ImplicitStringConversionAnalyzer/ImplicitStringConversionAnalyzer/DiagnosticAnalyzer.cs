@@ -8,7 +8,7 @@ namespace ImplicitStringConversionAnalyzer
     public class ImplicitStringConversionAnalyzer : DiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-            => ImmutableArray.Create(StringConcatenationWithImplicitConversionAnalyzer.Rule);
+            => ImmutableArray.Create(StringConcatenationWithImplicitConversionAnalyzer.Rule, ExplicitToStringWithoutOverrideAnalyzer.Rule);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -18,6 +18,7 @@ namespace ImplicitStringConversionAnalyzer
         private void AnalyzeSemanticModel(SemanticModelAnalysisContext context)
         {
             StringConcatenationWithImplicitConversionAnalyzer.Run(context);
+            ExplicitToStringWithoutOverrideAnalyzer.Run(context);
         }
     }
 }

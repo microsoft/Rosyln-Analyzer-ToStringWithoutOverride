@@ -62,29 +62,56 @@ namespace ImplicitStringConversionAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type conversions should be explicit..
+        ///   Looks up a localized string similar to Prevents calling .ToString() on a type which does not provide an override.
         /// </summary>
-        internal static string AnalyzerDescription {
+        internal static string ExplicitToStringWithoutOverrideDescription {
             get {
-                return ResourceManager.GetString("AnalyzerDescription", resourceCulture);
+                return ResourceManager.GetString("ExplicitToStringWithoutOverrideDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expression of type &apos;{0}&apos; will be converted to a string, but does not override ToString().
+        /// </summary>
+        internal static string ExplicitToStringWithoutOverrideMessageFormat {
+            get {
+                return ResourceManager.GetString("ExplicitToStringWithoutOverrideMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suspicious conversion to string.
+        /// </summary>
+        internal static string ExplicitToStringWithoutOverrideTitle {
+            get {
+                return ResourceManager.GetString("ExplicitToStringWithoutOverrideTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prevents calling .ToString() on a type which does not provide an override.
+        /// </summary>
+        internal static string StringConcatenationWithImplicitConversionDescription {
+            get {
+                return ResourceManager.GetString("StringConcatenationWithImplicitConversionDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Expression of type &apos;{0}&apos; will be implicitly converted to a string, but does not override ToString().
         /// </summary>
-        internal static string AnalyzerMessageFormat {
+        internal static string StringConcatenationWithImplicitConversionMessageFormat {
             get {
-                return ResourceManager.GetString("AnalyzerMessageFormat", resourceCulture);
+                return ResourceManager.GetString("StringConcatenationWithImplicitConversionMessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Suspicious implicit conversion to string.
         /// </summary>
-        internal static string AnalyzerTitle {
+        internal static string StringConcatenationWithImplicitConversionTitle {
             get {
-                return ResourceManager.GetString("AnalyzerTitle", resourceCulture);
+                return ResourceManager.GetString("StringConcatenationWithImplicitConversionTitle", resourceCulture);
             }
         }
     }

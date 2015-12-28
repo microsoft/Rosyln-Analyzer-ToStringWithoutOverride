@@ -1,30 +1,24 @@
 using System.Linq;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace ImplicitStringConversionAnalyzer
 {
-    /// <summary>
-    ///     Warns about objects being used in
-    ///     <a href="https://msdn.microsoft.com/en-us/library/aa691375(v=vs.71).aspx">string concatenation</a> that do not have
-    ///     an overriden ToString() method
-    /// </summary>
-    public class StringConcatenationWithImplicitConversionAnalyzer
+    public class ExplicitToStringWithoutOverrideAnalyzer
     {
-        public const string DiagnosticId = "ImplicitStringConversionAnalyzer";
+        public const string DiagnosticId = "ExplicitToStringWithoutOverrideAnalyzer";
         private const string Category = "Naming";
 
         private static readonly LocalizableString Title = new LocalizableResourceString(
-            nameof(Resources.StringConcatenationWithImplicitConversionTitle), Resources.ResourceManager, typeof (Resources));
+            nameof(Resources.ExplicitToStringWithoutOverrideTitle), Resources.ResourceManager, typeof (Resources));
 
         private static readonly LocalizableString MessageFormat =
-            new LocalizableResourceString(nameof(Resources.StringConcatenationWithImplicitConversionMessageFormat), Resources.ResourceManager,
+            new LocalizableResourceString(nameof(Resources.ExplicitToStringWithoutOverrideMessageFormat), Resources.ResourceManager,
                 typeof (Resources));
 
         private static readonly LocalizableString Description =
-            new LocalizableResourceString(nameof(Resources.StringConcatenationWithImplicitConversionDescription), Resources.ResourceManager,
+            new LocalizableResourceString(nameof(Resources.ExplicitToStringWithoutOverrideDescription), Resources.ResourceManager,
                 typeof (Resources));
 
         public static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat,
@@ -33,7 +27,7 @@ namespace ImplicitStringConversionAnalyzer
         private readonly SemanticModelAnalysisContext context;
         private readonly INamedTypeSymbol stringType;
 
-        public StringConcatenationWithImplicitConversionAnalyzer(SemanticModelAnalysisContext context)
+        public ExplicitToStringWithoutOverrideAnalyzer(SemanticModelAnalysisContext context)
         {
             this.context = context;
             stringType = context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_String);
@@ -41,36 +35,47 @@ namespace ImplicitStringConversionAnalyzer
 
         internal static void Run(SemanticModelAnalysisContext context)
         {
-            new StringConcatenationWithImplicitConversionAnalyzer(context).Run();
+            new ExplicitToStringWithoutOverrideAnalyzer(context).Run();
         }
 
         private void Run()
         {
-            var binaryAddExpressions =
+            var expressions =
                 context.SemanticModel.SyntaxTree.GetRoot()
                     .DescendantNodesAndSelf()
-                    .OfType<BinaryExpressionSyntax>()
-                    .Where(IsAddExpression);
+                    .OfType<InvocationExpressionSyntax>();
 
-            foreach (var binaryAddExpression in binaryAddExpressions)
+
+            foreach (var expression in expressions)
             {
-                var left = context.SemanticModel.GetTypeInfo(binaryAddExpression.Left);
-                var right = context.SemanticModel.GetTypeInfo(binaryAddExpression.Right);
+                var memberAccess = expression.Expression as MemberAccessExpressionSyntax;
 
-                if (IsStringType(left) && IsReferenceTypeWithoutOverridenToString(right))
+                if (memberAccess?.Name.ToString() != "ToString")
                 {
-                    ReportDiagnostic(binaryAddExpression.Right, right);
+                    continue;
                 }
-                else if (IsReferenceTypeWithoutOverridenToString(left) && IsStringType(right))
+                
+                if (expression.ArgumentList.Arguments.Any())
                 {
-                    ReportDiagnostic(binaryAddExpression.Left, left);
+                    continue;
                 }
+
+                var invocationReturnTypeInfo = context.SemanticModel.GetTypeInfo(expression);
+
+                if (!IsStringType(invocationReturnTypeInfo))
+                {
+                    continue;
+                }
+
+                var typeInfo2 = context.SemanticModel.GetTypeInfo(memberAccess.Expression);
+
+                if (!IsReferenceTypeWithoutOverridenToString(typeInfo2))
+                {
+                    continue;
+                }
+
+                ReportDiagnostic(expression, typeInfo2);
             }
-        }
-
-        private static bool IsAddExpression(BinaryExpressionSyntax node)
-        {
-            return node.Kind() == SyntaxKind.AddExpression;
         }
 
         private bool IsReferenceTypeWithoutOverridenToString(TypeInfo typeInfo)

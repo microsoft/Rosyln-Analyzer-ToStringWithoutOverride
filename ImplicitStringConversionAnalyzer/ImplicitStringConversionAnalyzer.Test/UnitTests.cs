@@ -184,7 +184,67 @@ namespace ConsoleApplication1
 
             VerifyCSharpDiagnostic(test);
         }
-        
+
+        [TestMethod]
+        public void DisallowExplicitCustomObjectToString()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string str = new NotConvertableToString().ToString();
+        }
+
+        class NotConvertableToString
+        {
+        }
+    }
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = "ExplicitToStringWithoutOverrideAnalyzer",
+                Message =
+                    "Expression of type 'ConsoleApplication1.Program.NotConvertableToString' will be converted to a string, but does not override ToString()",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 8, 26)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void AllowExplicitToString_For_CustomObjectWithOverridenToString()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string str = new ConvertableToString().ToString();
+        }
+
+        class ConvertableToString
+        {
+            public override string ToString()
+            {
+                return ""value"";
+            }
+        }
+    }
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new ImplicitStringConversionAnalyzer();
