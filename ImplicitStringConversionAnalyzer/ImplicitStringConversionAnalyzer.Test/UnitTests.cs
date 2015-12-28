@@ -245,6 +245,40 @@ namespace ConsoleApplication1
             VerifyCSharpDiagnostic(test);
         }
 
+        [TestMethod]
+        public void DisallowStringFormatArgument_For_CustomObjectWithoutOverridenToString()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string str = string.Format(""{0}"", new NotConvertableToString());
+        }
+
+        class NotConvertableToString
+        {
+        }
+    }
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = "StringFormatArgumentImplicitToStringAnalyzer",
+                Message =
+                    "Expression of type 'ConsoleApplication1.Program.NotConvertableToString' will be converted to a string, but does not override ToString()",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 8, 47)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new ImplicitStringConversionAnalyzer();

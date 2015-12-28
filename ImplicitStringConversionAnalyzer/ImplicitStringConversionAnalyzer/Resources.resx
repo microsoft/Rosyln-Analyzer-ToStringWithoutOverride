@@ -141,4 +141,16 @@
     <value>Suspicious implicit conversion to string</value>
     <comment>The title of the diagnostic.</comment>
   </data>
+  <data name="StringFormatArgumentImplicitToStringDescription" xml:space="preserve">
+    <value>Prevents calling .ToString() on a type which does not provide an override</value>
+    <comment>An optional longer localizable description of the diagnostic.</comment>
+  </data>
+  <data name="StringFormatArgumentImplicitToStringMessageFormat" xml:space="preserve">
+    <value>Expression of type '{0}' will be converted to a string, but does not override ToString()</value>
+    <comment>The format-able message the diagnostic displays.</comment>
+  </data>
+  <data name="StringFormatArgumentImplicitToStringTitle" xml:space="preserve">
+    <value>Suspicious conversion to string</value>
+    <comment>The title of the diagnostic.</comment>
+  </data>
 </root>
