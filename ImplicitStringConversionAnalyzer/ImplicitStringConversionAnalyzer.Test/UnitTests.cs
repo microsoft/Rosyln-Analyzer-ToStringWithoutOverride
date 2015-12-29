@@ -303,6 +303,32 @@ namespace ConsoleApplication1
             VerifyCSharpDiagnostic(test, expected);
         }
 
+        [TestMethod]
+        public void AllowStringFormatArgument_For_CustomObjectWithOverridenToString()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string str = string.Format(""{0}"", new ConvertableToString());
+        }
+
+        class ConvertableToString
+        {
+            public override string ToString()
+            {
+                return ""value"";
+            }
+        }
+    }
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new ImplicitStringConversionAnalyzer();
