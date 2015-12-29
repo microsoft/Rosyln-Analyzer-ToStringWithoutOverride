@@ -25,14 +25,12 @@ namespace ImplicitStringConversionAnalyzer
             Category, DiagnosticSeverity.Warning, true, Description);
 
         private readonly SemanticModelAnalysisContext context;
-        private readonly INamedTypeSymbol stringType;
-        private readonly INamedTypeSymbol objectType;
+        private readonly TypeInspection typeInspection;
 
         public ExplicitToStringWithoutOverrideAnalyzer(SemanticModelAnalysisContext context)
         {
             this.context = context;
-            stringType = context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_String);
-            objectType = context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_Object);
+            typeInspection = new TypeInspection(context.SemanticModel);
         }
 
         internal static void Run(SemanticModelAnalysisContext context)
@@ -64,14 +62,14 @@ namespace ImplicitStringConversionAnalyzer
 
                 var invocationReturnTypeInfo = context.SemanticModel.GetTypeInfo(expression);
 
-                if (!IsStringType(invocationReturnTypeInfo))
+                if (!typeInspection.IsStringType(invocationReturnTypeInfo))
                 {
                     continue;
                 }
 
                 var typeInfo2 = context.SemanticModel.GetTypeInfo(memberAccess.Expression);
 
-                if (!IsReferenceTypeWithoutOverridenToString(typeInfo2))
+                if (!typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo2))
                 {
                     continue;
                 }
@@ -80,45 +78,11 @@ namespace ImplicitStringConversionAnalyzer
             }
         }
 
-        private bool IsReferenceTypeWithoutOverridenToString(TypeInfo typeInfo)
-        {
-            return NotStringType(typeInfo) && typeInfo.Type?.IsReferenceType == true && !Equals(typeInfo.Type, objectType) &&
-                   TypeDidNotOverrideToString(typeInfo);
-        }
-
         private void ReportDiagnostic(ExpressionSyntax expression, TypeInfo typeInfo)
         {
             var diagnostic = Diagnostic.Create(Rule, expression.GetLocation(), typeInfo.Type.ToDisplayString());
 
             context.ReportDiagnostic(diagnostic);
-        }
-
-        private bool NotStringType(TypeInfo typeInfo)
-        {
-            return !IsStringType(typeInfo);
-        }
-
-        private bool IsStringType(TypeInfo typeInfo)
-        {
-            return Equals(typeInfo.Type, stringType);
-        }
-
-        private bool TypeDidNotOverrideToString(TypeInfo typeInfo)
-        {
-            return !TypeHasOverridenToString(typeInfo);
-        }
-
-        private bool TypeHasOverridenToString(TypeInfo typeInfo)
-        {
-            for (var type = typeInfo.Type; type != null && !Equals(type, objectType); type = type.BaseType)
-            {
-                if (type.GetMembers("ToString").Any())
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }

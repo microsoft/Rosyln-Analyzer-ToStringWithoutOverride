@@ -42,6 +42,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="StringConcatenationWithImplicitConversionAnalyzer.cs" />
+    <Compile Include="TypeInspection.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
