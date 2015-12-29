@@ -25,12 +25,12 @@ namespace ImplicitStringConversionAnalyzer
             Category, DiagnosticSeverity.Warning, true, Description);
 
         private readonly SemanticModelAnalysisContext context;
-        private readonly INamedTypeSymbol stringType;
+        private TypeInspection typeInspection;
 
         public StringFormatArgumentImplicitToStringAnalyzer(SemanticModelAnalysisContext context)
         {
             this.context = context;
-            stringType = context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_String);
+            typeInspection = new TypeInspection(context.SemanticModel);
         }
 
         internal static void Run(SemanticModelAnalysisContext context)
@@ -66,53 +66,19 @@ namespace ImplicitStringConversionAnalyzer
                 {
                     var typeInfo = context.SemanticModel.GetTypeInfo(argument.Expression);
 
-                    if (IsReferenceTypeWithoutOverridenToString(typeInfo))
+                    if (typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
                     {
                         ReportDiagnostic(argument.Expression, typeInfo);
                     }
                 }
             }
         }
-
-        private bool IsReferenceTypeWithoutOverridenToString(TypeInfo typeInfo)
-        {
-            return NotStringType(typeInfo) && typeInfo.Type?.IsReferenceType == true &&
-                   TypeDidNotOverrideToString(typeInfo);
-        }
-
+        
         private void ReportDiagnostic(ExpressionSyntax expression, TypeInfo typeInfo)
         {
             var diagnostic = Diagnostic.Create(Rule, expression.GetLocation(), typeInfo.Type.ToDisplayString());
 
             context.ReportDiagnostic(diagnostic);
-        }
-
-        private bool NotStringType(TypeInfo typeInfo)
-        {
-            return !IsStringType(typeInfo);
-        }
-
-        private bool IsStringType(TypeInfo typeInfo)
-        {
-            return Equals(typeInfo.Type, stringType);
-        }
-
-        private static bool TypeDidNotOverrideToString(TypeInfo typeInfo)
-        {
-            return !TypeHasOverridenToString(typeInfo);
-        }
-
-        private static bool TypeHasOverridenToString(TypeInfo typeInfo)
-        {
-            for (var type = typeInfo.Type; type?.BaseType != null; type = type.BaseType)
-            {
-                if (type.GetMembers("ToString").Any())
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }

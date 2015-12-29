@@ -18,7 +18,7 @@ namespace ImplicitStringConversionAnalyzer.Test
         }
 
         [TestMethod]
-        public void DisallowImplicitRightHandObjectToStringConversionForConcatenation()
+        public void AllowImplicitRightHandObjectToStringConversionForConcatenation()
         {
             var test = @"
 namespace ConsoleApplication1
@@ -31,24 +31,11 @@ namespace ConsoleApplication1
         }
     }
 }";
-            var expected = new DiagnosticResult
-            {
-                Id = "ImplicitStringConversionAnalyzer",
-                Message =
-                    "Expression of type 'object' will be implicitly converted to a string, but does not override ToString()",
-                Severity = DiagnosticSeverity.Warning,
-                Locations =
-                    new[]
-                    {
-                        new DiagnosticResultLocation("Test0.cs", 8, 31)
-                    }
-            };
-
-            VerifyCSharpDiagnostic(test, expected);
+            VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
-        public void DisallowImplicitLeftHandObjectToStringConversionForConcatenation()
+        public void AllowImplicitLeftHandObjectToStringConversionForConcatenation()
         {
             var test = @"
 namespace ConsoleApplication1
@@ -61,20 +48,7 @@ namespace ConsoleApplication1
         }
     }
 }";
-            var expected = new DiagnosticResult
-            {
-                Id = "ImplicitStringConversionAnalyzer",
-                Message =
-                    "Expression of type 'object' will be implicitly converted to a string, but does not override ToString()",
-                Severity = DiagnosticSeverity.Warning,
-                Locations =
-                    new[]
-                    {
-                        new DiagnosticResultLocation("Test0.cs", 8, 26)
-                    }
-            };
-
-            VerifyCSharpDiagnostic(test, expected);
+            VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
