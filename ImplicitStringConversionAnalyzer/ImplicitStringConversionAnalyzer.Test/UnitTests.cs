@@ -278,6 +278,24 @@ namespace ConsoleApplication1
         }
 
         [TestMethod]
+        public void AllowExplicitToString_On_Object_Type()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string str = new object().ToString();
+        }
+    }
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
         public void DisallowStringFormatArgument_For_CustomObjectWithoutOverridenToString()
         {
             var test = @"

@@ -82,7 +82,7 @@ namespace ImplicitStringConversionAnalyzer
 
         private bool IsReferenceTypeWithoutOverridenToString(TypeInfo typeInfo)
         {
-            return NotStringType(typeInfo) && typeInfo.Type?.IsReferenceType == true &&
+            return NotStringType(typeInfo) && typeInfo.Type?.IsReferenceType == true && !Equals(typeInfo.Type, objectType) &&
                    TypeDidNotOverrideToString(typeInfo);
         }
 
