@@ -270,6 +270,68 @@ namespace ConsoleApplication1
         }
 
         [TestMethod]
+        public void DisallowStringInterpolationArgument_For_CustomObjectWithoutOverridenToString()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var notConvertable = new NotConvertableToString()
+            string str = $""{notConvertable}"";
+        }
+
+        class NotConvertableToString
+        {
+        }
+    }
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = "InterpolatedStringImplicitToStringAnalyzer",
+                Message =
+                    "Expression of type 'ConsoleApplication1.Program.NotConvertableToString' will be converted to a string, but does not override ToString()",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 9, 29)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void AllowStringInterpolationArgument_For_CustomObjectWithOverridenToString()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var convertable = new ConvertableToString()
+            string str = $""{convertable}"";
+        }
+
+        class ConvertableToString
+        {
+            public override string ToString()
+            {
+                return ""value"";
+            }
+        }
+    }
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
         public void DisallowStringFormatArgument_For_CustomObjectWithoutOverridenToString()
         {
             var test = @"

@@ -91,6 +91,33 @@ namespace ImplicitStringConversionAnalyzer {
         /// <summary>
         ///   Looks up a localized string similar to Prevents calling .ToString() on a type which does not provide an override.
         /// </summary>
+        internal static string InterpolatedStringImplicitToStringDescription {
+            get {
+                return ResourceManager.GetString("InterpolatedStringImplicitToStringDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expression of type &apos;{0}&apos; will be converted to a string, but does not override ToString().
+        /// </summary>
+        internal static string InterpolatedStringImplicitToStringMessageFormat {
+            get {
+                return ResourceManager.GetString("InterpolatedStringImplicitToStringMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suspicious conversion to string.
+        /// </summary>
+        internal static string InterpolatedStringImplicitToStringTitle {
+            get {
+                return ResourceManager.GetString("InterpolatedStringImplicitToStringTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prevents calling .ToString() on a type which does not provide an override.
+        /// </summary>
         internal static string StringConcatenationWithImplicitConversionDescription {
             get {
                 return ResourceManager.GetString("StringConcatenationWithImplicitConversionDescription", resourceCulture);
