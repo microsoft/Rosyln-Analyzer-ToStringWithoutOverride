@@ -26,11 +26,13 @@ namespace ImplicitStringConversionAnalyzer
 
         private readonly SemanticModelAnalysisContext context;
         private TypeInspection typeInspection;
+        private IArrayTypeSymbol objectArrayType;
 
         public StringFormatArgumentImplicitToStringAnalyzer(SemanticModelAnalysisContext context)
         {
             this.context = context;
             typeInspection = new TypeInspection(context.SemanticModel);
+            objectArrayType = context.SemanticModel.Compilation.CreateArrayTypeSymbol(context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_Object));
         }
 
         internal static void Run(SemanticModelAnalysisContext context)
@@ -63,7 +65,11 @@ namespace ImplicitStringConversionAnalyzer
                 }
 
                 var arguments = expression.ArgumentList.Arguments;
-                if (arguments.Count == 2 && arguments[1].Expression is ImplicitArrayCreationExpressionSyntax)
+
+                if (arguments.Count == 2 && Equals(context.SemanticModel.GetTypeInfo(arguments[1].Expression).Type, objectArrayType))
+                {
+                }
+                else if (arguments.Count == 2 && arguments[1].Expression is ImplicitArrayCreationExpressionSyntax)
                 {
                     var paramsArraryArgumentExpression = (ImplicitArrayCreationExpressionSyntax)arguments[1].Expression;
 
