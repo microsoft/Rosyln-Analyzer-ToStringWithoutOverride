@@ -62,13 +62,31 @@ namespace ImplicitStringConversionAnalyzer
                     continue;
                 }
 
-                foreach (var argument in expression.ArgumentList.Arguments.Skip(1))
+                var arguments = expression.ArgumentList.Arguments;
+                if (arguments.Count == 2 && arguments[1].Expression is ImplicitArrayCreationExpressionSyntax)
                 {
-                    var typeInfo = context.SemanticModel.GetTypeInfo(argument.Expression);
+                    var paramsArraryArgumentExpression = (ImplicitArrayCreationExpressionSyntax)arguments[1].Expression;
 
-                    if (typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
+                    foreach (var argument in paramsArraryArgumentExpression.Initializer.Expressions)
                     {
-                        ReportDiagnostic(argument.Expression, typeInfo);
+                        var typeInfo = context.SemanticModel.GetTypeInfo(argument);
+
+                        if (typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
+                        {
+                            ReportDiagnostic(argument, typeInfo);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var argument in arguments.Skip(1))
+                    {
+                        var typeInfo = context.SemanticModel.GetTypeInfo(argument.Expression);
+
+                        if (typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
+                        {
+                            ReportDiagnostic(argument.Expression, typeInfo);
+                        }
                     }
                 }
             }
