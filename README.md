@@ -1,2 +1,2 @@
 # Rosyln-Analyzer-ToStringWithoutOverride
-.NET Compiler Platform ("Roslyn") analyzer to disallow calls to object.ToString() on types lacking an override.
+.NET Compiler Platform ("Roslyn") analyzer to disallow calling object.ToString() on types lacking an override.
