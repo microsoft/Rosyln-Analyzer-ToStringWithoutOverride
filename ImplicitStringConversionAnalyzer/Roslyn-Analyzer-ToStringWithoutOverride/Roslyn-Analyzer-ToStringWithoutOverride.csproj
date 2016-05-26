@@ -8,8 +8,8 @@
     <ProjectGuid>{7D67F46E-CD7C-47C2-96BB-E63375FE453E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ImplicitStringConversionAnalyzer</RootNamespace>
-    <AssemblyName>ImplicitStringConversionAnalyzer</AssemblyName>
+    <RootNamespace>Rosyln.Analyzer.ToStringWithOverride</RootNamespace>
+    <AssemblyName>Rosyln-Analyzer-ToStringWithOverride</AssemblyName>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -52,11 +52,8 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ImplicitStringConversionAnalyzer.nuspec">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
+    <None Include="Roslyn-Analyzer-ToStringWithoutOverride.nuspec" />
     <None Include="tools\install.ps1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
