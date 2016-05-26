@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("ImplicitStringConversionAnalyzer")]
-[assembly: AssemblyDescription("ImplicitStringConversionAnalyzer")]
+[assembly: AssemblyTitle("Rosyln-Analyzer-ToStringWithoutOverride")]
+[assembly: AssemblyDescription("Rosyln-Analyzer-ToStringWithoutOverride")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Daniel Stiner")]
-[assembly: AssemblyProduct("ImplicitStringConversionAnalyzer")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyProduct("Rosyln-Analyzer-ToStringWithoutOverride")]
+[assembly: AssemblyCopyright("Copyright © 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

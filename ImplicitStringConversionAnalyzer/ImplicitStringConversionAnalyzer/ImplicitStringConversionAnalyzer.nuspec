@@ -2,16 +2,16 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>$id$</id>
-    <version>$version$$versionsuffix$</version>
+    <version>$version$</version>
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>https://github.com/danstiner/ImplicitStringConversionAnalyzer/blob/master/LICENSE.txt</licenseUrl>
-    <projectUrl>https://github.com/danstiner/ImplicitStringConversionAnalyzer</projectUrl>
+    <licenseUrl>https://github.com/Microsoft/Rosyln-Analyzer-ToStringWithoutOverride/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/Microsoft/Rosyln-Analyzer-ToStringWithoutOverride</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>Version $version$</releaseNotes>
-    <tags>ImplicitStringConversionAnalyzer, analyzers</tags>
+    <tags>ToStringWithoutOverride, analyzers</tags>
   </metadata>
   <!-- The convention for analyzers is to put language agnostic dlls in analyzers\dotnet and language specific analyzers in either analyzers\dotnet\cs or analyzers\dotnet\vb -->
   <files>
