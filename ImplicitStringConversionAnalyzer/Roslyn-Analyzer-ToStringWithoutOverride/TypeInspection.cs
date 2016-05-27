@@ -1,7 +1,7 @@
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Rosyln.Analyzer.ToStringWithOverride
+namespace Rosyln.Analyzer.ToStringWithoutOverride
 {
     public class TypeInspection
     {

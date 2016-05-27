@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Rosyln.Analyzer.ToStringWithOverride
+namespace Rosyln.Analyzer.ToStringWithoutOverride
 {
     /// <summary>
     ///     Warns about objects being used in

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Rosyln.Analyzer.ToStringWithOverride {
+namespace Rosyln.Analyzer.ToStringWithoutOverride {
     using System;
     using System.Reflection;
     
@@ -40,7 +40,7 @@ namespace Rosyln.Analyzer.ToStringWithOverride {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rosyln.Analyzer.ToStringWithOverride.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rosyln.Analyzer.ToStringWithoutOverride.Resources", typeof(Resources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
