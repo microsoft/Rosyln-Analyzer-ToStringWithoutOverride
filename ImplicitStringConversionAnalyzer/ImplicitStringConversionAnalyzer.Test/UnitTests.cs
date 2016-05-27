@@ -472,7 +472,7 @@ namespace ConsoleApplication1
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new ImplicitStringConversionAnalyzer();
+            return new Rosyln.Analyzer.ToStringWithOverride.ImplicitStringConversionAnalyzer();
         }
     }
 }

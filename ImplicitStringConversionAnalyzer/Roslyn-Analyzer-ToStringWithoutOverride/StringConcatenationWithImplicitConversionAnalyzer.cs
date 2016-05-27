@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace ImplicitStringConversionAnalyzer
+namespace Rosyln.Analyzer.ToStringWithOverride
 {
     /// <summary>
     ///     Warns about objects being used in
@@ -27,8 +27,8 @@ namespace ImplicitStringConversionAnalyzer
             new LocalizableResourceString(nameof(Resources.StringConcatenationWithImplicitConversionDescription), Resources.ResourceManager,
                 typeof (Resources));
 
-        public static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat,
-            Category, DiagnosticSeverity.Warning, true, Description);
+        public static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(StringConcatenationWithImplicitConversionAnalyzer.DiagnosticId, StringConcatenationWithImplicitConversionAnalyzer.Title, StringConcatenationWithImplicitConversionAnalyzer.MessageFormat,
+            StringConcatenationWithImplicitConversionAnalyzer.Category, DiagnosticSeverity.Warning, true, StringConcatenationWithImplicitConversionAnalyzer.Description);
 
         private readonly SemanticModelAnalysisContext context;
         private readonly TypeInspection typeInspection;
@@ -36,7 +36,7 @@ namespace ImplicitStringConversionAnalyzer
         public StringConcatenationWithImplicitConversionAnalyzer(SemanticModelAnalysisContext context)
         {
             this.context = context;
-            typeInspection = new TypeInspection(context.SemanticModel);
+            this.typeInspection = new TypeInspection(context.SemanticModel);
         }
 
         internal static void Run(SemanticModelAnalysisContext context)
@@ -47,21 +47,21 @@ namespace ImplicitStringConversionAnalyzer
         private void Run()
         {
             var binaryAddExpressions =
-                context.SemanticModel.SyntaxTree.GetRoot()
+                this.context.SemanticModel.SyntaxTree.GetRoot()
                     .DescendantNodesAndSelf()
                     .OfType<BinaryExpressionSyntax>()
                     .Where(IsAddExpression);
 
             foreach (var binaryAddExpression in binaryAddExpressions)
             {
-                var left = context.SemanticModel.GetTypeInfo(binaryAddExpression.Left);
-                var right = context.SemanticModel.GetTypeInfo(binaryAddExpression.Right);
+                var left = this.context.SemanticModel.GetTypeInfo(binaryAddExpression.Left);
+                var right = this.context.SemanticModel.GetTypeInfo(binaryAddExpression.Right);
 
-                if (typeInspection.IsStringType(left) && typeInspection.IsReferenceTypeWithoutOverridenToString(right))
+                if (this.typeInspection.IsStringType(left) && this.typeInspection.IsReferenceTypeWithoutOverridenToString(right))
                 {
                     ReportDiagnostic(binaryAddExpression.Right, right);
                 }
-                else if (typeInspection.IsReferenceTypeWithoutOverridenToString(left) && typeInspection.IsStringType(right))
+                else if (this.typeInspection.IsReferenceTypeWithoutOverridenToString(left) && this.typeInspection.IsStringType(right))
                 {
                     ReportDiagnostic(binaryAddExpression.Left, left);
                 }
@@ -75,9 +75,9 @@ namespace ImplicitStringConversionAnalyzer
 
         private void ReportDiagnostic(ExpressionSyntax expression, TypeInfo typeInfo)
         {
-            var diagnostic = Diagnostic.Create(Rule, expression.GetLocation(), typeInfo.Type.ToDisplayString());
+            var diagnostic = Diagnostic.Create(StringConcatenationWithImplicitConversionAnalyzer.Rule, expression.GetLocation(), typeInfo.Type.ToDisplayString());
 
-            context.ReportDiagnostic(diagnostic);
+            this.context.ReportDiagnostic(diagnostic);
         }
     }
 }

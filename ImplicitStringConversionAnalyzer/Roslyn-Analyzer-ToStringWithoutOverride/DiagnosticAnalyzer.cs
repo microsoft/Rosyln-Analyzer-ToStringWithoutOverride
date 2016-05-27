@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace ImplicitStringConversionAnalyzer
+namespace Rosyln.Analyzer.ToStringWithOverride
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class ImplicitStringConversionAnalyzer : DiagnosticAnalyzer

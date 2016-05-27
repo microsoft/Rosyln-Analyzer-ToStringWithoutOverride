@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace ImplicitStringConversionAnalyzer
+namespace Rosyln.Analyzer.ToStringWithOverride
 {
     public class StringFormatArgumentImplicitToStringAnalyzer
     {
@@ -21,8 +21,8 @@ namespace ImplicitStringConversionAnalyzer
             new LocalizableResourceString(nameof(Resources.ExplicitToStringWithoutOverrideDescription), Resources.ResourceManager,
                 typeof (Resources));
 
-        public static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat,
-            Category, DiagnosticSeverity.Warning, true, Description);
+        public static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(StringFormatArgumentImplicitToStringAnalyzer.DiagnosticId, StringFormatArgumentImplicitToStringAnalyzer.Title, StringFormatArgumentImplicitToStringAnalyzer.MessageFormat,
+            StringFormatArgumentImplicitToStringAnalyzer.Category, DiagnosticSeverity.Warning, true, StringFormatArgumentImplicitToStringAnalyzer.Description);
 
         private readonly SemanticModelAnalysisContext context;
         private TypeInspection typeInspection;
@@ -31,8 +31,8 @@ namespace ImplicitStringConversionAnalyzer
         public StringFormatArgumentImplicitToStringAnalyzer(SemanticModelAnalysisContext context)
         {
             this.context = context;
-            typeInspection = new TypeInspection(context.SemanticModel);
-            objectArrayType = context.SemanticModel.Compilation.CreateArrayTypeSymbol(context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_Object));
+            this.typeInspection = new TypeInspection(context.SemanticModel);
+            this.objectArrayType = context.SemanticModel.Compilation.CreateArrayTypeSymbol(context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_Object));
         }
 
         internal static void Run(SemanticModelAnalysisContext context)
@@ -43,7 +43,7 @@ namespace ImplicitStringConversionAnalyzer
         private void Run()
         {
             var expressions =
-                context.SemanticModel.SyntaxTree.GetRoot()
+                this.context.SemanticModel.SyntaxTree.GetRoot()
                     .DescendantNodesAndSelf()
                     .OfType<InvocationExpressionSyntax>();
 
@@ -57,7 +57,7 @@ namespace ImplicitStringConversionAnalyzer
                     continue;
                 }
 
-                var memberAccessOnTypeInfo = context.SemanticModel.GetTypeInfo(memberAccess.Expression);
+                var memberAccessOnTypeInfo = this.context.SemanticModel.GetTypeInfo(memberAccess.Expression);
 
                 if (memberAccessOnTypeInfo.Type.ToString() != "string")
                 {
@@ -66,7 +66,7 @@ namespace ImplicitStringConversionAnalyzer
 
                 var arguments = expression.ArgumentList.Arguments;
 
-                if (arguments.Count == 2 && Equals(context.SemanticModel.GetTypeInfo(arguments[1].Expression).Type, objectArrayType))
+                if (arguments.Count == 2 && Equals(this.context.SemanticModel.GetTypeInfo(arguments[1].Expression).Type, this.objectArrayType))
                 {
                 }
                 else if (arguments.Count == 2 && arguments[1].Expression is ImplicitArrayCreationExpressionSyntax)
@@ -75,9 +75,9 @@ namespace ImplicitStringConversionAnalyzer
 
                     foreach (var argument in paramsArraryArgumentExpression.Initializer.Expressions)
                     {
-                        var typeInfo = context.SemanticModel.GetTypeInfo(argument);
+                        var typeInfo = this.context.SemanticModel.GetTypeInfo(argument);
 
-                        if (typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
+                        if (this.typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
                         {
                             ReportDiagnostic(argument, typeInfo);
                         }
@@ -87,9 +87,9 @@ namespace ImplicitStringConversionAnalyzer
                 {
                     foreach (var argument in arguments.Skip(1))
                     {
-                        var typeInfo = context.SemanticModel.GetTypeInfo(argument.Expression);
+                        var typeInfo = this.context.SemanticModel.GetTypeInfo(argument.Expression);
 
-                        if (typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
+                        if (this.typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
                         {
                             ReportDiagnostic(argument.Expression, typeInfo);
                         }
@@ -100,9 +100,9 @@ namespace ImplicitStringConversionAnalyzer
         
         private void ReportDiagnostic(ExpressionSyntax expression, TypeInfo typeInfo)
         {
-            var diagnostic = Diagnostic.Create(Rule, expression.GetLocation(), typeInfo.Type.ToDisplayString());
+            var diagnostic = Diagnostic.Create(StringFormatArgumentImplicitToStringAnalyzer.Rule, expression.GetLocation(), typeInfo.Type.ToDisplayString());
 
-            context.ReportDiagnostic(diagnostic);
+            this.context.ReportDiagnostic(diagnostic);
         }
     }
 }

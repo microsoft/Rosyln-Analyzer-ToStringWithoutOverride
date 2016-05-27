@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace ImplicitStringConversionAnalyzer
+namespace Rosyln.Analyzer.ToStringWithOverride
 {
     public class InterpolatedStringImplicitToStringAnalyzer
     {
@@ -21,8 +21,8 @@ namespace ImplicitStringConversionAnalyzer
             new LocalizableResourceString(nameof(Resources.InterpolatedStringImplicitToStringDescription), Resources.ResourceManager,
                 typeof (Resources));
 
-        public static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat,
-            Category, DiagnosticSeverity.Warning, true, Description);
+        public static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(InterpolatedStringImplicitToStringAnalyzer.DiagnosticId, InterpolatedStringImplicitToStringAnalyzer.Title, InterpolatedStringImplicitToStringAnalyzer.MessageFormat,
+            InterpolatedStringImplicitToStringAnalyzer.Category, DiagnosticSeverity.Warning, true, InterpolatedStringImplicitToStringAnalyzer.Description);
 
         private readonly SemanticModelAnalysisContext context;
         private readonly TypeInspection typeInspection;
@@ -30,7 +30,7 @@ namespace ImplicitStringConversionAnalyzer
         public InterpolatedStringImplicitToStringAnalyzer(SemanticModelAnalysisContext context)
         {
             this.context = context;
-            typeInspection = new TypeInspection(context.SemanticModel);
+            this.typeInspection = new TypeInspection(context.SemanticModel);
         }
 
         internal static void Run(SemanticModelAnalysisContext context)
@@ -41,7 +41,7 @@ namespace ImplicitStringConversionAnalyzer
         private void Run()
         {
             var expressions =
-                context.SemanticModel.SyntaxTree.GetRoot()
+                this.context.SemanticModel.SyntaxTree.GetRoot()
                     .DescendantNodesAndSelf()
                     .OfType<InterpolatedStringExpressionSyntax>();
 
@@ -50,9 +50,9 @@ namespace ImplicitStringConversionAnalyzer
             {
                 foreach (var part in expression.Contents.OfType<InterpolationSyntax>())
                 {
-                    var typeInfo = context.SemanticModel.GetTypeInfo(part.Expression);
+                    var typeInfo = this.context.SemanticModel.GetTypeInfo(part.Expression);
 
-                    if (typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
+                    if (this.typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
                     {
                         ReportDiagnostic(part.Expression, typeInfo);
                     }
@@ -62,9 +62,9 @@ namespace ImplicitStringConversionAnalyzer
         
         private void ReportDiagnostic(ExpressionSyntax expression, TypeInfo typeInfo)
         {
-            var diagnostic = Diagnostic.Create(Rule, expression.GetLocation(), typeInfo.Type.ToDisplayString());
+            var diagnostic = Diagnostic.Create(InterpolatedStringImplicitToStringAnalyzer.Rule, expression.GetLocation(), typeInfo.Type.ToDisplayString());
 
-            context.ReportDiagnostic(diagnostic);
+            this.context.ReportDiagnostic(diagnostic);
         }
     }
 }
