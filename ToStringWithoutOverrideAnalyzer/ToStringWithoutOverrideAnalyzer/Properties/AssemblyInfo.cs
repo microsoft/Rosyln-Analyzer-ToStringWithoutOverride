@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("Rosyln-Analyzer-ToStringWithoutOverride")]
+[assembly: AssemblyTitle("ToStringWithoutOverrideAnalyzer")]
 [assembly: AssemblyDescription("NET Compiler Platform (\"Roslyn\") analyzer to disallow calling object.ToString() on types lacking an override.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Rosyln-Analyzer-ToStringWithoutOverride")]
+[assembly: AssemblyProduct("ToStringWithoutOverrideAnalyzer")]
 [assembly: AssemblyCopyright("Copyright © 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -30,5 +30,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("0.4.0")]
-[assembly: AssemblyFileVersion("0.4.0.0")]
+[assembly: AssemblyVersion("0.4.1")]
+[assembly: AssemblyFileVersion("0.4.1.0")]

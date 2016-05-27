@@ -2,10 +2,10 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Rosyln.Analyzer.ToStringWithoutOverride
+namespace ToStringWithoutOverrideAnalyzer
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class ImplicitStringConversionAnalyzer : DiagnosticAnalyzer
+    public class ToStringWithoutOverrideAnalyzer : DiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             =>

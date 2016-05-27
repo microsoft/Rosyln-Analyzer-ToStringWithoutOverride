@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestHelper
+namespace ToStringWithoutOverrideAnalyzer.Test.Verifiers
 {
     /// <summary>
     ///     Superclass of all Unit Tests for DiagnosticAnalyzers

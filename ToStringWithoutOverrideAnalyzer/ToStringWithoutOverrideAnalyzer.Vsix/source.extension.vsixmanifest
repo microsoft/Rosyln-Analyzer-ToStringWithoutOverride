@@ -19,7 +19,7 @@
                 Version="[4.5.2,)" />
   </Dependencies>
   <Assets>
-    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" Path="|Roslyn-Analyzer-ToStringWithoutOverride|" />
-    <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="Roslyn-Analyzer-ToStringWithoutOverride" Path="|Roslyn-Analyzer-ToStringWithoutOverride|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" Path="|ToStringWithoutOverrideAnalyzer|" d:ProjectName="ToStringWithoutOverrideAnalyzer" />
+    <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="ToStringWithoutOverrideAnalyzer" Path="|ToStringWithoutOverrideAnalyzer|" />
   </Assets>
 </PackageManifest>

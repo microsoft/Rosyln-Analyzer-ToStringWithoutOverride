@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestHelper
+namespace ToStringWithoutOverrideAnalyzer.Test.Verifiers
 {
     /// <summary>
     ///     Superclass of all Unit tests made for diagnostics with codefixes.

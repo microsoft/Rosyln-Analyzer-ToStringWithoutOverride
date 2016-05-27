@@ -1,9 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestHelper;
+using ToStringWithoutOverrideAnalyzer.Test.Verifiers;
 
-namespace ImplicitStringConversionAnalyzer.Test
+namespace ToStringWithoutOverrideAnalyzer.Test
 {
     [TestClass]
     public class UnitTest : CodeFixVerifier
@@ -472,7 +472,7 @@ namespace ConsoleApplication1
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new Rosyln.Analyzer.ToStringWithoutOverride.ImplicitStringConversionAnalyzer();
+            return new ToStringWithoutOverrideAnalyzer();
         }
     }
 }
