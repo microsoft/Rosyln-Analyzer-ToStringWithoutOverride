@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("Rosyln-Analyzer-ToStringWithoutOverride")]
-[assembly: AssemblyDescription("Rosyln-Analyzer-ToStringWithoutOverride")]
+[assembly: AssemblyDescription("NET Compiler Platform (\"Roslyn\") analyzer to disallow calling object.ToString() on types lacking an override.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
 [assembly: AssemblyProduct("Rosyln-Analyzer-ToStringWithoutOverride")]
