@@ -71,7 +71,7 @@ namespace ToStringWithoutOverrideAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expression of type &apos;{0}&apos; will be converted to a string, but does not override ToString().
+        ///   Looks up a localized string similar to Calling ToString() on object of type &apos;{0}&apos; but it does not override ToString().
         /// </summary>
         internal static string ExplicitToStringWithoutOverrideMessageFormat {
             get {
