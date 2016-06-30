@@ -180,8 +180,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "ExplicitToStringWithoutOverrideAnalyzer",
-                Message =
-                    "Expression of type 'ConsoleApplication1.Program.NotConvertableToString' will be converted to a string, but does not override ToString()",
+                Message = "Calling ToString() on object of type 'ConsoleApplication1.Program.NotConvertableToString' but it does not override ToString()",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
@@ -352,8 +351,7 @@ namespace ConsoleApplication1
             var expected = new DiagnosticResult
             {
                 Id = "StringFormatArgumentImplicitToStringAnalyzer",
-                Message =
-                    "Expression of type 'ConsoleApplication1.Program.NotConvertableToString' will be converted to a string, but does not override ToString()",
+                Message = "Calling ToString() on object of type 'ConsoleApplication1.Program.NotConvertableToString' but it does not override ToString()",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
@@ -439,7 +437,7 @@ namespace ConsoleApplication1
             {
                 Id = "StringFormatArgumentImplicitToStringAnalyzer",
                 Message =
-                    "Expression of type 'ConsoleApplication1.Program.NotConvertableToString' will be converted to a string, but does not override ToString()",
+                    "Calling ToString() on object of type 'ConsoleApplication1.Program.NotConvertableToString' but it does not override ToString()",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
