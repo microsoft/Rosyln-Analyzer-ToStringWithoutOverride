@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>$id$</id>
+    <id>ToStringWithoutOverrideAnalyzer</id>
     <version>$version$</version>
-    <title>$title$</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
+    <title>ToStringWithoutOverrideAnalyzer</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
     <licenseUrl>https://github.com/Microsoft/Rosyln-Analyzer-ToStringWithoutOverride/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/Microsoft/Rosyln-Analyzer-ToStringWithoutOverride</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
+    <description>NET Compiler Platform ("Roslyn") analyzer to disallow calling object.ToString() on types lacking an override.</description>
     <releaseNotes>Version $version$</releaseNotes>
     <tags>ToStringWithoutOverride, ToString, analyzers</tags>
 	<developmentDependency>true</developmentDependency>
   </metadata>
   <!-- The convention for analyzers is to put language agnostic dlls in analyzers\dotnet and language specific analyzers in either analyzers\dotnet\cs or analyzers\dotnet\vb -->
   <files>
-    <file src="bin\*\*.dll" target="analyzers\dotnet\cs" exclude="**\Microsoft.CodeAnalysis.*;**\System.Collections.Immutable.*;**\System.Reflection.Metadata.*;**\System.Composition.*" />
+    <file src="*.dll" target="analyzers\dotnet\cs" exclude="**\Microsoft.CodeAnalysis.*;**\System.Collections.Immutable.*;**\System.Reflection.Metadata.*;**\System.Composition.*" />
     <file src="tools\*.ps1" target="tools\" />
   </files>
 </package>
