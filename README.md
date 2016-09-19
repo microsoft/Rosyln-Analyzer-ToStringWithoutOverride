@@ -14,6 +14,6 @@ Then we try to print out an instance of it:
 
     System.WriteLine("I need about {0}", new Money { amount = 3.50m, currency = "$" });
 
-The statement will print `I need about Money`, which is not very useful. This came up a number of times when logging the state of objects for debugging purposes, leading to the creation of this analyzer.
+The statement will print `I need about Money`, which is not very useful. This came up a number of times on a team when writing code logging the state of objects for debugging purposes, leading to the creation of this analyzer.
 
 After installing this analyzer the above `WriteLine` call will result in a compile-time error message `Expression of type 'Money' will be implicitly converted to a string, but does not override ToString()`.
