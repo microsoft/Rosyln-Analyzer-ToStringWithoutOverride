@@ -5,14 +5,16 @@
 
 Imagine we have the following simple [POCO](https://en.wikipedia.org/wiki/Plain_Old_CLR_Object) for representing money:
 
-    struct Money {
+    class Money {
         public decimal amount;
         public string currency;
     }
 
 Then we try to print out an instance of it:
 
-    System.WriteLine("I need about {0}", new Money { amount = 3.50m, currency = "$" });
+    System.Console.WriteLine($"I need about {new Money { amount = 3.50m, currency = "$" }}");
+    //or
+    System.Console.WriteLine(string.Format("I need about {0}", new Money { amount = 3.50m, currency = "$" }));
 
 The statement will print `I need about Money`, which is not very useful. This came up a number of times on a team when writing code logging the state of objects for debugging purposes, leading to the creation of this analyzer.
 
