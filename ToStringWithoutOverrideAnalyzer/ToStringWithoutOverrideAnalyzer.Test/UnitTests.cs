@@ -468,6 +468,28 @@ namespace ConsoleApplication1
             VerifyCSharpDiagnostic(test);
         }
 
+        [TestMethod]
+        public void DisallowReadmeExample()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    struct Money {
+        public decimal amount;
+        public string currency;
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            System.WriteLine(""I need about {0}"", new Money { amount = 3.50m, currency = ""$"" });
+        }
+    }
+}";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new ToStringWithoutOverrideAnalyzer();
