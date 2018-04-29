@@ -487,7 +487,20 @@ namespace ConsoleApplication1
     }
 }";
 
-            VerifyCSharpDiagnostic(test);
+            var expected = new DiagnosticResult
+            {
+                Id = "ConsoleWriteImplicitToStringAnalyzer",
+                Message =
+                    "Expression of type 'ConsoleApplication1.Program.Money' will be converted to a string, but does not override ToString()",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 9, 29)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
