@@ -1,13 +1,20 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToStringWithoutOverrideAnalyzer.Test", "ToStringWithoutOverrideAnalyzer\ToStringWithoutOverrideAnalyzer.Test\ToStringWithoutOverrideAnalyzer.Test.csproj", "{8B874819-A813-4346-B96A-D13173E3AA35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToStringWithoutOverrideAnalyzer.Vsix", "ToStringWithoutOverrideAnalyzer\ToStringWithoutOverrideAnalyzer.Vsix\ToStringWithoutOverrideAnalyzer.Vsix.csproj", "{9B344C53-1519-4F13-87E0-4C4624769ED9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToStringWithoutOverrideAnalyzer", "ToStringWithoutOverrideAnalyzer\ToStringWithoutOverrideAnalyzer\ToStringWithoutOverrideAnalyzer.csproj", "{7D67F46E-CD7C-47C2-96BB-E63375FE453E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{80C75B72-863E-4D7E-8B42-88341645DA15}"
+	ProjectSection(SolutionItems) = preProject
+		CONTRIBUTING.md = CONTRIBUTING.md
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +37,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {034F4D67-08F1-45D5-A215-6C6F3C64585A}
 	EndGlobalSection
 EndGlobal
