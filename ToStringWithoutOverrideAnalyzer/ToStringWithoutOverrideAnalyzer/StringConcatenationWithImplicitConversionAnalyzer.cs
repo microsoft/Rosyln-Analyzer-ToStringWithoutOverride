@@ -57,11 +57,11 @@ namespace ToStringWithoutOverrideAnalyzer
                 var left = this.context.SemanticModel.GetTypeInfo(binaryAddExpression.Left);
                 var right = this.context.SemanticModel.GetTypeInfo(binaryAddExpression.Right);
 
-                if (this.typeInspection.IsStringType(left) && this.typeInspection.IsReferenceTypeWithoutOverridenToString(right))
+                if (this.typeInspection.IsString(left) && this.typeInspection.LacksOverridenToString(right))
                 {
                     ReportDiagnostic(binaryAddExpression.Right, right);
                 }
-                else if (this.typeInspection.IsReferenceTypeWithoutOverridenToString(left) && this.typeInspection.IsStringType(right))
+                else if (this.typeInspection.LacksOverridenToString(left) && this.typeInspection.IsString(right))
                 {
                     ReportDiagnostic(binaryAddExpression.Left, left);
                 }

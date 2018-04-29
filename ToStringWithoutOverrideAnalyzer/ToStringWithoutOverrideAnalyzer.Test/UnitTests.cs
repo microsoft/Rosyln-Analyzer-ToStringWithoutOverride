@@ -160,7 +160,7 @@ namespace ConsoleApplication1
         }
 
         [TestMethod]
-        public void DisallowExplicitCustomObjectToString()
+        public void DisallowExplicitCustomClassToString()
         {
             var test = @"
 namespace ConsoleApplication1
@@ -173,6 +173,39 @@ namespace ConsoleApplication1
         }
 
         class NotConvertableToString
+        {
+        }
+    }
+}";
+            var expected = new DiagnosticResult
+            {
+                Id = "ExplicitToStringWithoutOverrideAnalyzer",
+                Message = "Calling ToString() on object of type 'ConsoleApplication1.Program.NotConvertableToString' but it does not override ToString()",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 8, 26)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [TestMethod]
+        public void DisallowExplicitCustomStructToString()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string str = new NotConvertableToString().ToString();
+        }
+
+        struct NotConvertableToString
         {
         }
     }
@@ -466,6 +499,77 @@ namespace ConsoleApplication1
 }";
 
             VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void DisallowConsoleWriteWithoutOverridenToString()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    struct Money {
+        public decimal amount;
+        public string currency;
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            System.Console.Out.Write(""I need about {0}"", new Money { amount = 3.50m, currency = ""$"" });
+        }
+    }
+}";
+
+            var expected = new DiagnosticResult
+            {
+                Id = "ConsoleWriteImplicitToStringAnalyzer",
+                Message =
+                    "Expression of type 'ConsoleApplication1.Money' will be converted to a string, but does not override ToString()",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 12, 58)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        // NB: This case is used as an example in the README
+        [TestMethod]
+        public void DisallowConsoleWriteLineWithoutOverridenToString()
+        {
+            var test = @"
+namespace ConsoleApplication1
+{
+    struct Money {
+        public decimal amount;
+        public string currency;
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            System.Console.WriteLine(""I need about {0}"", new Money { amount = 3.50m, currency = ""$"" });
+        }
+    }
+}";
+
+            var expected = new DiagnosticResult
+            {
+                Id = "ConsoleWriteImplicitToStringAnalyzer",
+                Message =
+                    "Expression of type 'ConsoleApplication1.Money' will be converted to a string, but does not override ToString()",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 12, 58)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()

@@ -52,7 +52,7 @@ namespace ToStringWithoutOverrideAnalyzer
                 {
                     var typeInfo = this.context.SemanticModel.GetTypeInfo(part.Expression);
 
-                    if (this.typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
+                    if (this.typeInspection.LacksOverridenToString(typeInfo))
                     {
                         ReportDiagnostic(part.Expression, typeInfo);
                     }

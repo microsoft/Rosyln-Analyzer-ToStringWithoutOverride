@@ -5,50 +5,54 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace ToStringWithoutOverrideAnalyzer
 {
-    public class ExplicitToStringWithoutOverrideAnalyzer
+    public class ConsoleWriteAnalyzer
     {
-        public const string DiagnosticId = "ExplicitToStringWithoutOverrideAnalyzer";
+        public const string DiagnosticId = "ConsoleWriteImplicitToStringAnalyzer";
         private const string Category = "Naming";
 
         static readonly LocalizableString Title = new LocalizableResourceString(
-            nameof(Resources.ExplicitToStringWithoutOverrideTitle),
+            nameof(Resources.ConsoleWriteAnalyzerTitle),
             Resources.ResourceManager,
             typeof(Resources));
 
         static readonly LocalizableString MessageFormat =
             new LocalizableResourceString(
-                nameof(Resources.ExplicitToStringWithoutOverrideMessageFormat),
+                nameof(Resources.ConsoleWriteAnalyzerMessageFormat),
                 Resources.ResourceManager,
                 typeof(Resources));
 
         static readonly LocalizableString Description =
             new LocalizableResourceString(
-                nameof(Resources.ExplicitToStringWithoutOverrideDescription),
+                nameof(Resources.ConsoleWriteAnalyzerDescription),
                 Resources.ResourceManager,
                 typeof(Resources));
 
         public static readonly DiagnosticDescriptor Rule =
             new DiagnosticDescriptor(
-                ExplicitToStringWithoutOverrideAnalyzer.DiagnosticId,
-                ExplicitToStringWithoutOverrideAnalyzer.Title,
-                ExplicitToStringWithoutOverrideAnalyzer.MessageFormat,
-                ExplicitToStringWithoutOverrideAnalyzer.Category,
+                ConsoleWriteAnalyzer.DiagnosticId,
+                ConsoleWriteAnalyzer.Title,
+                ConsoleWriteAnalyzer.MessageFormat,
+                ConsoleWriteAnalyzer.Category,
                 DiagnosticSeverity.Warning,
                 true,
-                ExplicitToStringWithoutOverrideAnalyzer.Description);
+                ConsoleWriteAnalyzer.Description);
 
         private readonly SemanticModelAnalysisContext context;
         private readonly TypeInspection typeInspection;
+        private readonly INamedTypeSymbol systemConsoleNamedType;
+        private readonly INamedTypeSymbol systemIOTextWriterType;
 
-        public ExplicitToStringWithoutOverrideAnalyzer(SemanticModelAnalysisContext context)
+        public ConsoleWriteAnalyzer(SemanticModelAnalysisContext context)
         {
             this.context = context;
             this.typeInspection = new TypeInspection(context.SemanticModel);
+            this.systemConsoleNamedType = context.SemanticModel.Compilation.GetTypeByMetadataName("System.Console");
+            this.systemIOTextWriterType = context.SemanticModel.Compilation.GetTypeByMetadataName("System.IO.TextWriter");
         }
 
         internal static void Run(SemanticModelAnalysisContext context)
         {
-            new ExplicitToStringWithoutOverrideAnalyzer(context).Run();
+            new ConsoleWriteAnalyzer(context).Run();
         }
 
         private void Run()
@@ -63,37 +67,36 @@ namespace ToStringWithoutOverrideAnalyzer
             {
                 var memberAccess = expression.Expression as MemberAccessExpressionSyntax;
 
-                if (memberAccess?.Name.ToString() != "ToString")
-                {
-                    continue;
-                }
-                
-                if (expression.ArgumentList.Arguments.Any())
+                if (memberAccess == null)
                 {
                     continue;
                 }
 
-                var invocationReturnTypeInfo = this.context.SemanticModel.GetTypeInfo(expression);
-
-                if (!this.typeInspection.IsString(invocationReturnTypeInfo))
+                if (memberAccess.Name.ToString() != "Write" && memberAccess.Name.ToString() != "WriteLine")
                 {
                     continue;
                 }
 
-                var typeInfo2 = this.context.SemanticModel.GetTypeInfo(memberAccess.Expression);
-
-                if (!this.typeInspection.LacksOverridenToString(typeInfo2))
-                {
+                if (!IsTextWriterOrStaticSystemConsole(memberAccess.Expression)) {
                     continue;
                 }
 
-                ReportDiagnostic(expression, typeInfo2);
+                foreach (var result in this.typeInspection.LackingOverridenToString(expression.ArgumentList))
+                {
+                    ReportDiagnostic(result.Expression, result.TypeInfo);
+                }
             }
+        }
+
+        private bool IsTextWriterOrStaticSystemConsole(ExpressionSyntax expression)
+        {
+            var typeInfo = this.context.SemanticModel.GetTypeInfo(expression);
+            return Equals(typeInfo.Type, this.systemIOTextWriterType) || Equals(typeInfo.Type, this.systemConsoleNamedType);
         }
 
         private void ReportDiagnostic(ExpressionSyntax expression, TypeInfo typeInfo)
         {
-            var diagnostic = Diagnostic.Create(ExplicitToStringWithoutOverrideAnalyzer.Rule, expression.GetLocation(), typeInfo.Type.ToDisplayString());
+            var diagnostic = Diagnostic.Create(ConsoleWriteAnalyzer.Rule, expression.GetLocation(), typeInfo.Type.ToDisplayString());
 
             this.context.ReportDiagnostic(diagnostic);
         }

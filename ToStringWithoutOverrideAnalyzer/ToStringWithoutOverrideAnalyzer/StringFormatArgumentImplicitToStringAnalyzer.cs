@@ -26,13 +26,11 @@ namespace ToStringWithoutOverrideAnalyzer
 
         private readonly SemanticModelAnalysisContext context;
         private TypeInspection typeInspection;
-        private IArrayTypeSymbol objectArrayType;
 
         public StringFormatArgumentImplicitToStringAnalyzer(SemanticModelAnalysisContext context)
         {
             this.context = context;
             this.typeInspection = new TypeInspection(context.SemanticModel);
-            this.objectArrayType = context.SemanticModel.Compilation.CreateArrayTypeSymbol(context.SemanticModel.Compilation.GetSpecialType(SpecialType.System_Object));
         }
 
         internal static void Run(SemanticModelAnalysisContext context)
@@ -59,41 +57,14 @@ namespace ToStringWithoutOverrideAnalyzer
 
                 var memberAccessOnTypeInfo = this.context.SemanticModel.GetTypeInfo(memberAccess.Expression);
 
-                if (memberAccessOnTypeInfo.Type.ToString() != "string")
+                if (!this.typeInspection.IsString(memberAccessOnTypeInfo))
                 {
                     continue;
                 }
 
-                var arguments = expression.ArgumentList.Arguments;
-
-                if (arguments.Count == 2 && Equals(this.context.SemanticModel.GetTypeInfo(arguments[1].Expression).Type, this.objectArrayType))
+                foreach (var result in this.typeInspection.LackingOverridenToString(expression.ArgumentList))
                 {
-                }
-                else if (arguments.Count == 2 && arguments[1].Expression is ImplicitArrayCreationExpressionSyntax)
-                {
-                    var paramsArraryArgumentExpression = (ImplicitArrayCreationExpressionSyntax)arguments[1].Expression;
-
-                    foreach (var argument in paramsArraryArgumentExpression.Initializer.Expressions)
-                    {
-                        var typeInfo = this.context.SemanticModel.GetTypeInfo(argument);
-
-                        if (this.typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
-                        {
-                            ReportDiagnostic(argument, typeInfo);
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var argument in arguments.Skip(1))
-                    {
-                        var typeInfo = this.context.SemanticModel.GetTypeInfo(argument.Expression);
-
-                        if (this.typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo))
-                        {
-                            ReportDiagnostic(argument.Expression, typeInfo);
-                        }
-                    }
+                    ReportDiagnostic(result.Expression, result.TypeInfo);
                 }
             }
         }

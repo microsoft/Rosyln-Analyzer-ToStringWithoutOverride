@@ -20,7 +20,7 @@ namespace ToStringWithoutOverrideAnalyzer {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -58,6 +58,33 @@ namespace ToStringWithoutOverrideAnalyzer {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prevents calling .ToString() on a type which does not provide an override.
+        /// </summary>
+        internal static string ConsoleWriteAnalyzerDescription {
+            get {
+                return ResourceManager.GetString("ConsoleWriteAnalyzerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expression of type &apos;{0}&apos; will be converted to a string, but does not override ToString().
+        /// </summary>
+        internal static string ConsoleWriteAnalyzerMessageFormat {
+            get {
+                return ResourceManager.GetString("ConsoleWriteAnalyzerMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suspicious implicit conversion to string.
+        /// </summary>
+        internal static string ConsoleWriteAnalyzerTitle {
+            get {
+                return ResourceManager.GetString("ConsoleWriteAnalyzerTitle", resourceCulture);
             }
         }
         
@@ -161,7 +188,7 @@ namespace ToStringWithoutOverrideAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Suspicious conversion to string.
+        ///   Looks up a localized string similar to Suspicious implicit  conversion to string.
         /// </summary>
         internal static string StringFormatArgumentImplicitToStringTitle {
             get {

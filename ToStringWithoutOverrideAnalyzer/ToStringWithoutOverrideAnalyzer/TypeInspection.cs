@@ -1,43 +1,72 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ToStringWithoutOverrideAnalyzer
 {
     public class TypeInspection
     {
-        private readonly INamedTypeSymbol stringType;
+        public struct LackingOverridenToStringResult
+        {
+            public LackingOverridenToStringResult(ExpressionSyntax expression, TypeInfo typeInfo)
+            {
+                this.Expression = expression;
+                this.TypeInfo = typeInfo;
+            }
+
+            public ExpressionSyntax Expression { get; }
+            public TypeInfo TypeInfo { get; }
+        }
+        private readonly SemanticModel semanticModel;
         private readonly INamedTypeSymbol objectType;
+        private readonly IArrayTypeSymbol objectArrayType;
+        private readonly INamedTypeSymbol stringType;
+        private readonly INamedTypeSymbol valueType;
 
         public TypeInspection(SemanticModel semanticModel)
         {
-            this.stringType = semanticModel.Compilation.GetSpecialType(SpecialType.System_String);
+            this.semanticModel = semanticModel;
             this.objectType = semanticModel.Compilation.GetSpecialType(SpecialType.System_Object);
+            this.objectArrayType = semanticModel.Compilation.CreateArrayTypeSymbol(semanticModel.Compilation.GetSpecialType(SpecialType.System_Object));
+            this.stringType = semanticModel.Compilation.GetSpecialType(SpecialType.System_String);
+            this.valueType = semanticModel.Compilation.GetSpecialType(SpecialType.System_ValueType);
         }
 
-        public bool IsReferenceTypeWithoutOverridenToString(TypeInfo typeInfo)
+        public bool LacksOverridenToString(TypeInfo typeInfo)
         {
-            return NotStringType(typeInfo) && typeInfo.Type?.IsReferenceType == true && !Equals(typeInfo.Type, this.objectType) &&
-                   TypeDidNotOverrideToString(typeInfo);
+            return !HasToString(typeInfo);
         }
-
-        public bool NotStringType(TypeInfo typeInfo)
+        
+        private bool HasToString(TypeInfo typeInfo)
         {
-            return !IsStringType(typeInfo);
+            return IsString(typeInfo) || IsObject(typeInfo) || TypeHasOverridenToString(typeInfo);
         }
 
-        public bool IsStringType(TypeInfo typeInfo)
+        private bool IsObject(TypeInfo typeInfo)
+        {
+            return Equals(typeInfo.Type, this.objectType);
+        }
+
+        public bool IsObjectArray(TypeInfo typeInfo)
+        {
+            return Equals(typeInfo.Type, this.objectArrayType);
+        }
+
+        public bool IsString(TypeInfo typeInfo)
         {
             return Equals(typeInfo.Type, this.stringType);
         }
 
-        public bool TypeDidNotOverrideToString(TypeInfo typeInfo)
+        private bool IsValueType(TypeInfo typeInfo)
         {
-            return !TypeHasOverridenToString(typeInfo);
+            return Equals(typeInfo.Type, this.valueType);
         }
 
-        public bool TypeHasOverridenToString(TypeInfo typeInfo)
+        private bool TypeHasOverridenToString(TypeInfo typeInfo)
         {
-            for (var type = typeInfo.Type; type != null && !Equals(type, this.objectType); type = type.BaseType)
+            for (var type = typeInfo.Type; type != null && NotRootTypeSymbol(type); type = type.BaseType)
             {
                 if (type.GetMembers("ToString").Any())
                 {
@@ -46,6 +75,46 @@ namespace ToStringWithoutOverrideAnalyzer
             }
 
             return false;
+        }
+
+        private bool NotRootTypeSymbol(ITypeSymbol type)
+        {
+            return !Equals(type, this.objectType) && !Equals(type, this.valueType);
+        }
+
+        public IEnumerable<LackingOverridenToStringResult> LackingOverridenToString(ArgumentListSyntax argumentList)
+        {
+            var arguments = argumentList.Arguments;
+
+            if (arguments.Count == 2 && IsObjectArray(this.semanticModel.GetTypeInfo(arguments[1].Expression)))
+            {
+            }
+            else if (arguments.Count == 2 && arguments[1].Expression is ImplicitArrayCreationExpressionSyntax)
+            {
+                var paramsArraryArgumentExpression = (ImplicitArrayCreationExpressionSyntax)arguments[1].Expression;
+
+                foreach (var argument in paramsArraryArgumentExpression.Initializer.Expressions)
+                {
+                    var typeInfo = this.semanticModel.GetTypeInfo(argument);
+
+                    if (LacksOverridenToString(typeInfo))
+                    {
+                        yield return new LackingOverridenToStringResult(argument, typeInfo);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var argument in arguments.Skip(1))
+                {
+                    var typeInfo = this.semanticModel.GetTypeInfo(argument.Expression);
+
+                    if (LacksOverridenToString(typeInfo))
+                    {
+                        yield return new LackingOverridenToStringResult(argument.Expression, typeInfo);
+                    }
+                }
+            }
         }
     }
 }

@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ConsoleWriteAnalyzer.cs" />
     <Compile Include="DiagnosticAnalyzer.cs" />
     <Compile Include="InterpolatedStringImplicitToStringAnalyzer.cs" />
     <Compile Include="StringFormatArgumentImplicitToStringAnalyzer.cs" />
