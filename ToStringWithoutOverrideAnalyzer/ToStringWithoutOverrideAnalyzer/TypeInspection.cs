@@ -14,7 +14,7 @@ namespace ToStringWithoutOverrideAnalyzer
             this.objectType = semanticModel.Compilation.GetSpecialType(SpecialType.System_Object);
         }
 
-        public bool IsReferenceTypeWithoutOverridenToString(TypeInfo typeInfo)
+        public bool IsTypeWithoutOverridenToString(TypeInfo typeInfo)
         {
             return NotStringType(typeInfo) && typeInfo.Type?.IsReferenceType == true && !Equals(typeInfo.Type, this.objectType) &&
                    TypeDidNotOverrideToString(typeInfo);

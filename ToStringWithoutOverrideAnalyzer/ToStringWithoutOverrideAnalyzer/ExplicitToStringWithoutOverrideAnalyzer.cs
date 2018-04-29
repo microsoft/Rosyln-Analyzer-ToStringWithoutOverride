@@ -82,7 +82,7 @@ namespace ToStringWithoutOverrideAnalyzer
 
                 var typeInfo2 = this.context.SemanticModel.GetTypeInfo(memberAccess.Expression);
 
-                if (!this.typeInspection.IsReferenceTypeWithoutOverridenToString(typeInfo2))
+                if (!this.typeInspection.IsTypeWithoutOverridenToString(typeInfo2))
                 {
                     continue;
                 }
