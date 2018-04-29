@@ -515,7 +515,7 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            System.Write(""I need about {0}"", new Money { amount = 3.50m, currency = ""$"" });
+            System.Console.Out.Write(""I need about {0}"", new Money { amount = 3.50m, currency = ""$"" });
         }
     }
 }";
@@ -524,12 +524,12 @@ namespace ConsoleApplication1
             {
                 Id = "ConsoleWriteImplicitToStringAnalyzer",
                 Message =
-                    "Expression of type 'ConsoleApplication1.Program.Money' will be converted to a string, but does not override ToString()",
+                    "Expression of type 'ConsoleApplication1.Money' will be converted to a string, but does not override ToString()",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 9, 29)
+                        new DiagnosticResultLocation("Test0.cs", 12, 58)
                     }
             };
 
@@ -551,7 +551,7 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            System.WriteLine(""I need about {0}"", new Money { amount = 3.50m, currency = ""$"" });
+            System.Console.WriteLine(""I need about {0}"", new Money { amount = 3.50m, currency = ""$"" });
         }
     }
 }";
@@ -560,12 +560,12 @@ namespace ConsoleApplication1
             {
                 Id = "ConsoleWriteImplicitToStringAnalyzer",
                 Message =
-                    "Expression of type 'ConsoleApplication1.Program.Money' will be converted to a string, but does not override ToString()",
+                    "Expression of type 'ConsoleApplication1.Money' will be converted to a string, but does not override ToString()",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 9, 29)
+                        new DiagnosticResultLocation("Test0.cs", 12, 58)
                     }
             };
 

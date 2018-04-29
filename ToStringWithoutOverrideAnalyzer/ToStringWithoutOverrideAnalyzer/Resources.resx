@@ -117,6 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ConsoleWriteAnalyzerDescription" xml:space="preserve">
+    <value>Prevents calling .ToString() on a type which does not provide an override</value>
+    <comment>An optional longer localizable description of the diagnostic.</comment>
+  </data>
+  <data name="ConsoleWriteAnalyzerMessageFormat" xml:space="preserve">
+    <value>Expression of type '{0}' will be converted to a string, but does not override ToString()</value>
+    <comment>The format-able message the diagnostic displays.</comment>
+  </data>
+  <data name="ConsoleWriteAnalyzerTitle" xml:space="preserve">
+    <value>Suspicious implicit conversion to string</value>
+    <comment>The title of the diagnostic.</comment>
+  </data>
   <data name="ExplicitToStringWithoutOverrideDescription" xml:space="preserve">
     <value>Prevents calling .ToString() on a type which does not provide an override</value>
     <comment>An optional longer localizable description of the diagnostic.</comment>
@@ -162,7 +174,7 @@
     <comment>The format-able message the diagnostic displays.</comment>
   </data>
   <data name="StringFormatArgumentImplicitToStringTitle" xml:space="preserve">
-    <value>Suspicious conversion to string</value>
+    <value>Suspicious implicit  conversion to string</value>
     <comment>The title of the diagnostic.</comment>
   </data>
 </root>
