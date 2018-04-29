@@ -75,14 +75,14 @@ namespace ToStringWithoutOverrideAnalyzer
 
                 var invocationReturnTypeInfo = this.context.SemanticModel.GetTypeInfo(expression);
 
-                if (!this.typeInspection.IsStringType(invocationReturnTypeInfo))
+                if (!this.typeInspection.IsString(invocationReturnTypeInfo))
                 {
                     continue;
                 }
 
                 var typeInfo2 = this.context.SemanticModel.GetTypeInfo(memberAccess.Expression);
 
-                if (!this.typeInspection.IsTypeWithoutOverridenToString(typeInfo2))
+                if (!this.typeInspection.LacksOverridenToString(typeInfo2))
                 {
                     continue;
                 }

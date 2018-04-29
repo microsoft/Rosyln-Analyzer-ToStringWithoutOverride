@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
@@ -5,39 +6,46 @@ namespace ToStringWithoutOverrideAnalyzer
 {
     public class TypeInspection
     {
-        private readonly INamedTypeSymbol stringType;
         private readonly INamedTypeSymbol objectType;
+        private readonly INamedTypeSymbol stringType;
+        private readonly INamedTypeSymbol valueType;
 
         public TypeInspection(SemanticModel semanticModel)
         {
-            this.stringType = semanticModel.Compilation.GetSpecialType(SpecialType.System_String);
             this.objectType = semanticModel.Compilation.GetSpecialType(SpecialType.System_Object);
+            this.stringType = semanticModel.Compilation.GetSpecialType(SpecialType.System_String);
+            this.valueType = semanticModel.Compilation.GetSpecialType(SpecialType.System_ValueType);
         }
 
-        public bool IsTypeWithoutOverridenToString(TypeInfo typeInfo)
+        public bool LacksOverridenToString(TypeInfo typeInfo)
         {
-            return NotStringType(typeInfo) && typeInfo.Type?.IsReferenceType == true && !Equals(typeInfo.Type, this.objectType) &&
-                   TypeDidNotOverrideToString(typeInfo);
+            return !HasToString(typeInfo);
+            //return typeInfo.Type?.IsReferenceType == true &&
         }
-
-        public bool NotStringType(TypeInfo typeInfo)
+        
+        private bool HasToString(TypeInfo typeInfo)
         {
-            return !IsStringType(typeInfo);
+            return IsString(typeInfo) || IsObject(typeInfo) || TypeHasOverridenToString(typeInfo);
         }
 
-        public bool IsStringType(TypeInfo typeInfo)
+        private bool IsObject(TypeInfo typeInfo)
+        {
+            return Equals(typeInfo.Type, this.objectType);
+        }
+
+        public bool IsString(TypeInfo typeInfo)
         {
             return Equals(typeInfo.Type, this.stringType);
         }
 
-        public bool TypeDidNotOverrideToString(TypeInfo typeInfo)
+        private bool IsValueType(TypeInfo typeInfo)
         {
-            return !TypeHasOverridenToString(typeInfo);
+            return Equals(typeInfo.Type, this.valueType);
         }
 
-        public bool TypeHasOverridenToString(TypeInfo typeInfo)
+        private bool TypeHasOverridenToString(TypeInfo typeInfo)
         {
-            for (var type = typeInfo.Type; type != null && !Equals(type, this.objectType); type = type.BaseType)
+            for (var type = typeInfo.Type; type != null && NotRootTypeSymbol(type); type = type.BaseType)
             {
                 if (type.GetMembers("ToString").Any())
                 {
@@ -46,6 +54,11 @@ namespace ToStringWithoutOverrideAnalyzer
             }
 
             return false;
+        }
+
+        private bool NotRootTypeSymbol(ITypeSymbol type)
+        {
+            return !Equals(type, this.objectType) && !Equals(type, this.valueType);
         }
     }
 }

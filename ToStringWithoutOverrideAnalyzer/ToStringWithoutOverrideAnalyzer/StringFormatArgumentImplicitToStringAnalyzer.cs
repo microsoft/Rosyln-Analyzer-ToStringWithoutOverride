@@ -77,7 +77,7 @@ namespace ToStringWithoutOverrideAnalyzer
                     {
                         var typeInfo = this.context.SemanticModel.GetTypeInfo(argument);
 
-                        if (this.typeInspection.IsTypeWithoutOverridenToString(typeInfo))
+                        if (this.typeInspection.LacksOverridenToString(typeInfo))
                         {
                             ReportDiagnostic(argument, typeInfo);
                         }
@@ -89,7 +89,7 @@ namespace ToStringWithoutOverrideAnalyzer
                     {
                         var typeInfo = this.context.SemanticModel.GetTypeInfo(argument.Expression);
 
-                        if (this.typeInspection.IsTypeWithoutOverridenToString(typeInfo))
+                        if (this.typeInspection.LacksOverridenToString(typeInfo))
                         {
                             ReportDiagnostic(argument.Expression, typeInfo);
                         }
